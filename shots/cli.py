@@ -1,11 +1,11 @@
-"""lf: the commands the Claude Code skills call. Each prints one JSON line so the agent can read the result.
+"""shots: the commands the Claude Code skills call. Each prints one JSON line so the agent can read the result.
 
-    lf doctor                         check Python packages, Blender and API keys
-    lf product-check <product>        render the model from 3 angles beside its photos (check/sheet.jpg)
-    lf ad <ad.json> [--provider X]    layout -> repaint -> composite -> verify -> overlay, into <ad folder>/out/
-    lf layout | repaint | composite | verify <ad.json>    one step at a time
-    lf texture rectify <photo> --corners x,y,x,y,x,y,x,y --size WxH --out face.png
-    lf texture unwrap <photo> --box l,t,r,b --wrap 150 --out side.png
+    shots doctor                         check Python packages, Blender and API keys
+    shots product-check <product>        render the model from 3 angles beside its photos (check/sheet.jpg)
+    shots ad <ad.json> [--provider X]    layout -> repaint -> composite -> verify -> overlay, into <ad folder>/out/
+    shots layout | repaint | composite | verify <ad.json>    one step at a time
+    shots texture rectify <photo> --corners x,y,x,y,x,y,x,y --size WxH --out face.png
+    shots texture unwrap <photo> --box l,t,r,b --wrap 150 --out side.png
 """
 import argparse
 import importlib.util
@@ -117,7 +117,7 @@ def cmd_texture(args) -> int:
 
 
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(prog="lf", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(prog="shots", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("doctor").set_defaults(fn=cmd_doctor)
     pc = sub.add_parser("product-check")

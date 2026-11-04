@@ -1,8 +1,8 @@
 import numpy as np
 from PIL import Image
 
-from lf import prompt, textures
-from lf.repaint import openai_size
+from shots import prompt, textures
+from shots.repaint import openai_size
 
 
 def test_prompt_grammar_for_one_and_many():

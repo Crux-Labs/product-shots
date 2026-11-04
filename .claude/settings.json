@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(.venv/bin/lf:*)",
+      "Bash(.venv/bin/shots:*)",
       "Bash(./scripts/setup.sh)",
       "Bash(./scripts/get_blender.sh)",
       "Bash(.venv/bin/python examples/make_kits.py)",

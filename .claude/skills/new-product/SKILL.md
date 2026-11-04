@@ -32,10 +32,10 @@ If the product fits neither, say so, and offer the closest template or adding a 
 Work in `products/<name>/kit/`, keep the original photos, and write textures beside them (`front.png`, `side.png`, ...).
 
 - **Box faces:** find each face's four corners in the photo (open the image and measure; zoom on corners). Then:
-  `.venv/bin/lf texture rectify kit/front_photo.jpg --corners x1,y1,x2,y2,x3,y3,x4,y4 --size WxH --out kit/front.png`
+  `.venv/bin/shots texture rectify kit/front_photo.jpg --corners x1,y1,x2,y2,x3,y3,x4,y4 --size WxH --out kit/front.png`
   Corners go top-left, top-right, bottom-right, bottom-left. Pick W:H in the face's real proportions (a 70 x 120 mm face is 700x1200).
 - **Round labels:** find the body's left, top, right and bottom edges in a straight-on front photo, then:
-  `.venv/bin/lf texture unwrap kit/front_photo.jpg --box l,t,r,b --wrap 150 --out kit/side.png`
+  `.venv/bin/shots texture unwrap kit/front_photo.jpg --box l,t,r,b --wrap 150 --out kit/side.png`
   and set `"wrap_deg": 150` in `product.json`. Leave `wrap_deg` at 360 only for a texture that really covers the full circumference.
 - **Tops and lids:** rectify a top photo to a square; for round lids, crop to the circle.
 
@@ -61,7 +61,7 @@ Follow `docs/files.md`. Example:
 
 ## 5. Check
 
-Run `.venv/bin/lf product-check <name>` (about 30-60 s) and show the user `products/<name>/check/sheet.jpg`: the model from front, three-quarter and top, above their photos. Compare it yourself first: proportions, label position, orientation, colour. Fix what you see, then ask the user whether it looks like their product. Repeat until they're happy.
+Run `.venv/bin/shots product-check <name>` (about 30-60 s) and show the user `products/<name>/check/sheet.jpg`: the model from front, three-quarter and top, above their photos. Compare it yourself first: proportions, label position, orientation, colour. Fix what you see, then ask the user whether it looks like their product. Repeat until they're happy.
 
 Common fixes: wrong proportions means wrong `dimensions_mm`; label upside down or mirrored means re-cut the texture with the corners in the right order; label off-centre on a round product means the `--box` edges were off; too shiny or flat means change `finish`.
 

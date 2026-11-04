@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from lf.composite import ProductPixelsChanged, composite, composite_arrays, verify
+from shots.composite import ProductPixelsChanged, composite, composite_arrays, verify
 
 
 def scene(h=64, w=80):

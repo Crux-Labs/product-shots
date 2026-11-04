@@ -22,4 +22,4 @@ fi
 .venv/bin/python examples/make_kits.py
 [ -f .env ] || cp .env.example .env
 
-.venv/bin/lf doctor || true
+.venv/bin/shots doctor || true

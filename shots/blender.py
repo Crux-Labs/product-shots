@@ -1,4 +1,4 @@
-"""Resolves an ad or product spec and runs lf/bpy/build.py in a headless Blender."""
+"""Resolves an ad or product spec and runs shots/bpy/build.py in a headless Blender."""
 import json
 import os
 import subprocess
@@ -39,7 +39,7 @@ def run(spec: dict, out_dir: Path, log_name: str) -> dict:
     if done.returncode:
         tail = "\n".join(log.read_text().splitlines()[-25:])
         raise SystemExit(f"Blender failed (exit {done.returncode}); last lines of {log}:\n{tail}")
-    marker = "LF_LAYOUT " if spec.get("mode", "layout") == "layout" else "LF_VIEWS "
+    marker = "SHOTS_LAYOUT " if spec.get("mode", "layout") == "layout" else "SHOTS_VIEWS "
     line = next((l for l in log.read_text().splitlines() if l.startswith(marker)), None)
     return json.loads(line[len(marker):]) if line else {}
 

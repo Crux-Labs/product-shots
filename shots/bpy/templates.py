@@ -167,5 +167,5 @@ def build(spec, name):
         if resolved.get(key, {}).get("texture"):
             resolved[key] = {**resolved[key], "texture": str(base / resolved[key]["texture"])}
     obj = TEMPLATES[spec["template"]](resolved, name)
-    obj["lf_product"] = True
+    obj["shots_product"] = True
     return obj

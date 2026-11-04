@@ -19,13 +19,13 @@ GEMINI_RATIOS = {"9:16": 9 / 16, "4:5": 0.8, "1:1": 1.0, "16:9": 16 / 9, "3:2": 
 
 
 def provider_and_model(provider: str | None) -> tuple[str, str]:
-    provider = provider or setting("LF_PROVIDER") or ("openai" if setting("OPENAI_API_KEY") else "gemini")
+    provider = provider or setting("SHOTS_PROVIDER") or ("openai" if setting("OPENAI_API_KEY") else "gemini")
     if provider not in DEFAULT_MODELS:
         raise SystemExit(f"unknown provider {provider!r}; use openai or gemini")
     key = "OPENAI_API_KEY" if provider == "openai" else "GEMINI_API_KEY"
     if not setting(key):
         raise SystemExit(f"{key} is not set. Add it to .env (run /setup).")
-    return provider, setting(f"LF_{provider.upper()}_MODEL") or DEFAULT_MODELS[provider]
+    return provider, setting(f"SHOTS_{provider.upper()}_MODEL") or DEFAULT_MODELS[provider]
 
 
 def openai_size(w: int, h: int) -> str:

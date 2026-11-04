@@ -5,7 +5,7 @@ description: Makes a finished product image or ad from a plain-language descript
 
 # Make an ad
 
-Goal: `products/<product>/ads/<slug>/out/final.png`, with `lf verify` passing, shown to the user with its cost.
+Goal: `products/<product>/ads/<slug>/out/final.png`, with `shots verify` passing, shown to the user with its cost.
 
 ## 1. Understand the ask
 
@@ -22,24 +22,24 @@ Create `products/<product>/ads/<slug>/ad.json` (format in `docs/files.md`; `exam
 - **Camera:** `lens_mm` (50-85 for product shots), `distance_mm` and `height_mm` from the target, `target_mm` at the products' middle height. Lower camera = heroic; higher = flat-lay feel (a top-down flat lay is height much bigger than distance).
 - **Set:** `floor_color` and `wall_color` close to the scene the user wants (warm brown for wood, white for marble). The model repaints them, but a close colour helps it. Set `"wall": false` for outdoor or top-down scenes.
 - **Light:** `key_azimuth_deg` matches where the window or sun should be (negative = left). Product light is kept in the final image, so light the product the way the scene will be lit.
-- **scene_prompt:** the room in plain photographic words: surface, background, light direction, depth of field, and where to leave calm space for text. Don't mention the product; `lf` adds the rules that protect it.
+- **scene_prompt:** the room in plain photographic words: surface, background, light direction, depth of field, and where to leave calm space for text. Don't mention the product; `shots` adds the rules that protect it.
 
 ## 3. Check the layout first
 
-Run `.venv/bin/lf layout <ad.json>` (about 1-2 min) and look at `out/guide.png`. Check framing, product size in frame, nothing cut off, room for text, lighting direction. Fix `ad.json` and re-run until it's right; this costs nothing. Show it to the user if the composition is a judgement call.
+Run `.venv/bin/shots layout <ad.json>` (about 1-2 min) and look at `out/guide.png`. Check framing, product size in frame, nothing cut off, room for text, lighting direction. Fix `ad.json` and re-run until it's right; this costs nothing. Show it to the user if the composition is a judgement call.
 
 ## 4. Repaint and finish
 
-Run `.venv/bin/lf ad <ad.json> --skip-layout` (reuses the layout; about 30-60 s and $0.05-0.15). It repaints, puts the product back and verifies. Look at `out/final.png` before showing it:
+Run `.venv/bin/shots ad <ad.json> --skip-layout` (reuses the layout; about 30-60 s and $0.05-0.15). It repaints, puts the product back and verifies. Look at `out/final.png` before showing it:
 - Does the room match the request? Is the light direction plausible against the product's shadow?
-- **Ghosts:** a faint second edge or outline right next to the product means the model redrew it slightly bigger. Re-run `lf ad --skip-layout` once (a new repaint usually fixes it), or move the product a little.
+- **Ghosts:** a faint second edge or outline right next to the product means the model redrew it slightly bigger. Re-run `shots ad --skip-layout` once (a new repaint usually fixes it), or move the product a little.
 - If the room is wrong, adjust `scene_prompt` and re-run with `--skip-layout`. Tell the user before spending on more than two re-runs.
 
 Never fix a product problem by editing the final image or asking the image model about the product. Product problems are fixed in the model (`/new-product`) or the layout.
 
 ## 5. Text (optional)
 
-If the user wants a headline: write `products/<product>/ads/<slug>/overlay.html`, a page the exact image size with a transparent background and the text placed in the calm area, and add `"overlay": "overlay.html"` to `ad.json`. It needs `.venv/bin/pip install -e '.[overlay]'` and `.venv/bin/playwright install chromium` once (ask first). Then `lf ad <ad.json> --skip-layout`.
+If the user wants a headline: write `products/<product>/ads/<slug>/overlay.html`, a page the exact image size with a transparent background and the text placed in the calm area, and add `"overlay": "overlay.html"` to `ad.json`. It needs `.venv/bin/pip install -e '.[overlay]'` and `.venv/bin/playwright install chromium` once (ask first). Then `shots ad <ad.json> --skip-layout`.
 
 ## 6. Deliver
 

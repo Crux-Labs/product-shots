@@ -5,8 +5,8 @@ import numpy as np
 import pytest
 from PIL import Image
 
-from lf import blender
-from lf.config import ROOT, find_blender
+from shots import blender
+from shots.config import ROOT, find_blender
 
 pytestmark = pytest.mark.skipif(find_blender() is None, reason="Blender not installed")
 

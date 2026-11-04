@@ -1,8 +1,8 @@
-# layoutfirst
+# product-shots
 
 Product ads where **Blender owns the product and an image model paints only the room around it.**
 
-Image models are good at rooms, light and mood, and bad at your product: they redraw logos, misspell labels and change sizes. layoutfirst never lets them touch it. Your product is a 3D model wrapped in your own photos. Blender places it, the image model repaints everything else as a real photo, and the exact product pixels go back on top. Every run checks that not one product pixel changed.
+Image models are good at rooms, light and mood, and bad at your product: they redraw logos, misspell labels and change sizes. product-shots never lets them touch it. Your product is a 3D model wrapped in your own photos. Blender places it, the image model repaints everything else as a real photo, and the exact product pixels go back on top. Every run checks that not one product pixel changed.
 
 ![Blender layout on the left, finished ad on the right](docs/img/demo_before_after.jpg)
 
@@ -13,11 +13,11 @@ Image models are good at rooms, light and mood, and bad at your product: they re
 You need [Claude Code](https://claude.com/claude-code), Python 3.10+, and an OpenAI or Gemini API key, on macOS (Apple silicon) or Linux. Blender is downloaded into the folder for you if it's missing. On Windows, use WSL or install Blender yourself.
 
 ```bash
-git clone https://github.com/<org>/layoutfirst
+git clone https://github.com/Crux-Labs/product-shots
 ```
 
 ```bash
-cd layoutfirst && claude
+cd product-shots && claude
 ```
 
 Then, inside Claude Code:
@@ -33,23 +33,23 @@ Then, inside Claude Code:
 1. **Blender layout.** Your product model, camera, framing and product lighting. The room is a rough guide. Three renders come out: the whole scene, the product with the shadows it casts, and a product mask.
 2. **Mask.** The product outline, grown by about 6 px, is marked "do not change".
 3. **Image model repaint.** One edit call re-shoots everything outside the mask as a real photo. The prompt keeps the camera, horizon and every object's size and position, and forbids adding any product, logo or text. About 30-40 s and $0.05-0.12 per image.
-4. **Exact product put back.** The Blender product and its shadow go back on top in linear light. `lf verify` reads the saved image and fails the run if any product pixel differs from Blender.
+4. **Exact product put back.** The Blender product and its shadow go back on top in linear light. `shots verify` reads the saved image and fails the run if any product pixel differs from Blender.
 
 More in [docs/how-it-works.md](docs/how-it-works.md). Why this approach, and what it beat in a blind test: [docs/results.md](docs/results.md).
 
 ## Without Claude Code
 
-Everything Claude does goes through the `lf` command, so you can run it yourself:
+Everything Claude does goes through the `shots` command, so you can run it yourself:
 
 ```bash
 ./scripts/setup.sh
 ```
 
 ```bash
-.venv/bin/lf ad examples/demo-tin/ads/counter/ad.json
+.venv/bin/shots ad examples/demo-tin/ads/counter/ad.json
 ```
 
-`lf --help` lists every command. Products are folders with a `product.json` and a `kit/` of photos; ads are an `ad.json`. See [docs/files.md](docs/files.md).
+`shots --help` lists every command. Products are folders with a `product.json` and a `kit/` of photos; ads are an `ad.json`. See [docs/files.md](docs/files.md).
 
 ## What works and what doesn't yet
 
@@ -59,4 +59,4 @@ Everything Claude does goes through the `lf` command, so you can run it yourself
 
 ## License
 
-GPL-3.0. The scripts in `lf/bpy/` run inside Blender and use its Python API, which is GPL.
+GPL-3.0. The scripts in `shots/bpy/` run inside Blender and use its Python API, which is GPL.

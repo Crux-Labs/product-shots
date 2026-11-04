@@ -17,7 +17,7 @@ esac
 got=""
 for m in "${MIRRORS[@]}"; do
   echo "Downloading ${m}/Blender${SERIES}/${FILE}"
-  if curl -fL --progress-bar -A "layoutfirst-setup" -o "tools/${FILE}" "${m}/Blender${SERIES}/${FILE}"; then got=1; break; fi
+  if curl -fL --progress-bar -A "product-shots-setup" -o "tools/${FILE}" "${m}/Blender${SERIES}/${FILE}"; then got=1; break; fi
 done
 [ -n "$got" ] || { echo "Could not download ${FILE}. Install Blender 4.2+ from blender.org and set BLENDER_PATH in .env." >&2; exit 1; }
 rm -rf tools/blender && mkdir -p tools/blender

@@ -174,7 +174,7 @@ def layout():
     cy.use_denoising = False
     info["mask_s"] = render(OUT / "mask.png", 64)
     (OUT / "layout.json").write_text(json.dumps(info, indent=1))
-    print("LF_LAYOUT", json.dumps(info))
+    print("SHOTS_LAYOUT", json.dumps(info))
 
 
 def views():
@@ -198,7 +198,7 @@ def views():
             render(path, 96)
             info["views"].append({"product": prod["name"], "view": view, "file": str(path)})
     (OUT / "views.json").write_text(json.dumps(info, indent=1))
-    print("LF_VIEWS", json.dumps(info))
+    print("SHOTS_VIEWS", json.dumps(info))
 
 
 {"layout": layout, "views": views}[SPEC.get("mode", "layout")]()

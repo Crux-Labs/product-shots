@@ -1,6 +1,6 @@
 # Templates
 
-A template turns a `product.json` into a Blender object. It lives in `lf/bpy/templates.py` and gets the product spec with texture paths already made absolute.
+A template turns a `product.json` into a Blender object. It lives in `shots/bpy/templates.py` and gets the product spec with texture paths already made absolute.
 
 ## box
 
@@ -18,7 +18,7 @@ Good for tins, cans, jars, bottles, tubs.
 
 ## Adding a template
 
-1. Write a function `name(spec, obj_name)` in `lf/bpy/templates.py` that builds a mesh with UVs and returns the object, origin at the base centre, front facing -Y, metres. Use `material()` for textured and plain materials so finishes stay consistent.
+1. Write a function `name(spec, obj_name)` in `shots/bpy/templates.py` that builds a mesh with UVs and returns the object, origin at the base centre, front facing -Y, metres. Use `material()` for textured and plain materials so finishes stay consistent.
 2. Register it in `TEMPLATES`.
 3. Make texture paths absolute in `build()` if it adds new texture fields.
 4. Add a made-up example under `examples/` and a check sheet in your PR.
