@@ -1,0 +1,11 @@
+{
+  "name": "demo-box",
+  "display_name": "green Kettle & Fern tea box",
+  "template": "box",
+  "dimensions_mm": {"width": 70, "depth": 70, "height": 120},
+  "faces": {"front": "kit/front.png", "back": "kit/back.png", "left": "kit/left.png", "right": "kit/right.png", "top": "kit/top.png"},
+  "body_color": [44, 86, 64],
+  "finish": "paper",
+  "bevel_mm": 0.8,
+  "notes": "Made-up demo product. Label art is drawn by examples/make_kits.py."
+}

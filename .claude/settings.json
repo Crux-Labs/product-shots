@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(.venv/bin/lf:*)",
+      "Bash(./scripts/setup.sh)",
+      "Bash(./scripts/get_blender.sh)",
+      "Bash(.venv/bin/python examples/make_kits.py)",
+      "Bash(.venv/bin/python -m pytest:*)",
+      "Bash(cp .env.example .env)",
+      "Bash(mkdir -p products/:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Bash(cat .env:*)"
+    ]
+  }
+}

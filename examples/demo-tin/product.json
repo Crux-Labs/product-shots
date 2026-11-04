@@ -1,0 +1,11 @@
+{
+  "name": "demo-tin",
+  "display_name": "red Northfield Peppermints tin",
+  "template": "cylinder",
+  "dimensions_mm": {"diameter": 70, "height": 26},
+  "side": {"texture": "kit/side.png", "wrap_deg": 360},
+  "top": {"texture": "kit/top.png"},
+  "body_color": [196, 42, 46],
+  "finish": "metal",
+  "notes": "Made-up demo product. Label art is drawn by examples/make_kits.py."
+}

@@ -1,0 +1,12 @@
+{
+  "page": [1080, 1350],
+  "products": [
+    {"product": "demo-tin", "position_mm": [-55, 10, 0], "rotation_deg": [0, 0, 0]},
+    {"product": "demo-box", "position_mm": [55, 40, 0], "rotation_deg": [0, 0, -20]}
+  ],
+  "camera": {"lens_mm": 60, "distance_mm": 520, "height_mm": 230, "azimuth_deg": 0, "target_mm": [0, 20, 45]},
+  "set": {"floor_color": [176, 128, 86], "wall": true, "wall_color": [214, 216, 212], "wall_distance_mm": 260},
+  "light": {"key_azimuth_deg": -60, "key_elevation_deg": 35, "key_power": 1.0, "fill": 0.35, "ambient": 0.25},
+  "render": {"samples": 128, "exposure": 0.0, "denoise": true},
+  "scene_prompt": "a warm oak kitchen counter with real wood grain, a pale grey tiled wall behind with real grout lines, soft morning window light from the left, gentle natural shadows, slightly shallow depth of field on the wall, calm empty space in the top third for a headline"
+}

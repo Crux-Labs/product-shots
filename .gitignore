@@ -1,0 +1,11 @@
+.env
+.venv/
+tools/
+products/*
+!products/.gitkeep
+**/out/
+**/check/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.DS_Store
