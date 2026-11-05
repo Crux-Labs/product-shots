@@ -22,3 +22,7 @@ ad.json ──► Blender ──► guide.png ──► image model edit ──�
 ## Why the product keeps its Blender light
 
 The product is lit in Blender and never relit to match the repainted room. We tried the opposite order (model paints an empty room, Blender lights the product from it) and it scored worst in a blind test: matching the room's light dulled brand colours and the room's scale shrank products. See [results.md](results.md). The trade-off: if the model invents a strong light (hard sun) the product, lit softly, can look slightly off. Set `light.key_azimuth_deg` to where the window will be.
+
+## Experimental: relight
+
+`shots relight <ad.json>` re-renders the product after the repaint, under light read from the repainted room (a vision model estimates direction, height, colour and softness) and with the repaint as a blurred panorama to reflect. The result goes to `out/relit/` and passes the same pixel check. In our benchmark it made ads worse: room-coloured light tints the product's printed colours, and judges read that as the wrong product. See [results/report.md](../results/report.md#relighting-test-it-made-things-worse). Not part of `/make-ad`.

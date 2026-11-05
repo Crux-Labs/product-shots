@@ -6,7 +6,8 @@
     shots layout | repaint | composite | verify <ad.json>    one step at a time
     shots texture rectify <photo> --corners x,y,x,y,x,y,x,y --size WxH --out face.png
     shots texture unwrap <photo> --box l,t,r,b --wrap 150 --out side.png
-    shots bench briefs|run|judge|accuracy|report <product>    the three-way benchmark, see shots/bench.py
+    shots relight <ad.json>              re-render the product under light read from the repainted room, into out/relit/
+    shots bench briefs|run|relight|judge|accuracy|report <product>    the three-way benchmark, see shots/bench.py
 """
 import argparse
 import importlib.util
@@ -117,18 +118,27 @@ def cmd_texture(args) -> int:
     return 0
 
 
+def cmd_relight(args) -> int:
+    from . import relight
+    result = relight.relight(Path(args.ad))
+    emit({"plate": str(Path(args.ad).resolve().parent / "out" / "relit" / "plate.png"), "light": result["light"], "verify": result["verify"]})
+    return 0
+
+
 def cmd_bench(args) -> int:
     from . import bench
     if args.step == "briefs":
         emit({"briefs": bench.make_briefs(args.product, args.n)})
     elif args.step == "run":
         emit(bench.run(args.product, args.workers, args.limit))
+    elif args.step == "relight":
+        emit(bench.relight_all(args.product, args.workers, args.limit))
     elif args.step == "judge":
-        emit(bench.judge(args.product, args.workers))
+        emit(bench.judge(args.product, args.workers, arms=args.arms, tag=args.tag))
     elif args.step == "accuracy":
         emit(bench.accuracy(args.product, args.workers))
     else:
-        emit(bench.report(args.product, Path(args.out or f"results/{args.product}")))
+        emit(bench.report(args.product, Path(args.out or f"results/{args.product}"), arms=args.arms, tag=args.tag))
     return 0
 
 
@@ -149,6 +159,9 @@ def main(argv=None) -> int:
         if name == "verify":
             sp.add_argument("image", nargs="?")
         sp.set_defaults(fn=fn)
+    rl = sub.add_parser("relight")
+    rl.add_argument("ad")
+    rl.set_defaults(fn=cmd_relight)
     tx = sub.add_parser("texture")
     tx.add_argument("kind", choices=["rectify", "unwrap"])
     tx.add_argument("photo")
@@ -159,12 +172,14 @@ def main(argv=None) -> int:
     tx.add_argument("--wrap", type=float, default=150)
     tx.set_defaults(fn=cmd_texture)
     bn = sub.add_parser("bench")
-    bn.add_argument("step", choices=["briefs", "run", "judge", "accuracy", "report"])
+    bn.add_argument("step", choices=["briefs", "run", "relight", "judge", "accuracy", "report"])
     bn.add_argument("product")
     bn.add_argument("--n", type=int, default=100)
     bn.add_argument("--workers", type=int, default=4)
     bn.add_argument("--limit", type=int, help="run: only the first N briefs")
     bn.add_argument("--out", help="report: output folder (default results/<product>)")
+    bn.add_argument("--arms", type=lambda v: v.split(","), help="judge/report: three arms to compare, e.g. full_model,layout_first,relit")
+    bn.add_argument("--tag", help="judge/report: name for this comparison, so its judgements sit beside the main ones")
     bn.set_defaults(fn=cmd_bench)
     args = p.parse_args(argv)
     try:

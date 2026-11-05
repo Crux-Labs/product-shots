@@ -6,6 +6,8 @@
 
     shots bench briefs <product> --n 100     write <product>/bench/briefs/NNN/{ad.json, brief.json}
     shots bench run <product>                make all three arms for every brief (resumable)
+    shots bench relight <product>            a fourth arm, relit: layout first with the product re-lit from its repaint
+    shots bench judge <product> --arms full_model,layout_first,relit --tag relit    judge any three arms, kept apart by tag
     shots bench judge <product>              blind-judge each brief's three images with Gemini (resumable)
     shots bench accuracy <product>           check each ad's product item by item against the reference (resumable)
     shots bench report <product> --out DIR   summary.json, report.md and example sheets
@@ -24,7 +26,7 @@ from . import blender, composite, prompt, repaint
 from .config import find_product, setting
 
 ARMS = ["full_model", "blender", "layout_first"]
-ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first"}
+ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first", "relit": "Layout first, relit"}
 FORMATS = {"1:1": (1080, 1080), "4:5": (1080, 1350), "9:16": (1080, 1920)}
 # (scene prompt, floor colour, wall colour or None, light side)
 SCENES = [
@@ -278,6 +280,40 @@ def run(product: str, workers: int = 4, limit: int | None = None) -> dict:
     return {arm: sum(_done(d, arm) for d in briefs) for arm in ARMS} | {"briefs": len(briefs)}
 
 
+def relight_all(product: str, workers: int = 4, limit: int | None = None) -> dict:
+    """Re-lights every finished layout-first ad. Light estimates run in parallel, Blender one job at a time."""
+    from . import relight
+    todo = [d for d in _briefs(product)[:limit] if _done(d, "layout_first") and not _done(d, "relit")]
+    lock = threading.Lock()
+
+    def estimate(d):
+        path = d / "out" / "relit" / "light_estimate.json"
+        if not path.exists():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            try:
+                path.write_text(json.dumps(relight.estimate_light(d / "out" / "repaint.png"), indent=1))
+            except Exception as e:
+                _record(d, "relit", {"ok": False, "error": repr(e)[:500]}, lock)
+
+    with ThreadPoolExecutor(workers) as pool:
+        list(pool.map(estimate, todo))
+    for d in todo:
+        path = d / "out" / "relit" / "light_estimate.json"
+        if not path.exists():
+            continue
+        t0 = time.time()
+        try:
+            result = relight.relight(d / "ad.json", json.loads(path.read_text()))
+            shutil.copy(d / "out" / "relit" / "plate.png", d / "relit.png")
+            base = json.loads((d / "arms.json").read_text())["layout_first"]
+            # The repaint is reused, so the arm costs what layout first did plus one small vision call.
+            _record(d, "relit", {"ok": True, "cost_usd": round(base["cost_usd"] + relight.ESTIMATE_COST_USD, 4),
+                                 "seconds": round(base["seconds"] + time.time() - t0, 1), "verify": result["verify"]}, lock)
+        except BaseException as e:
+            _record(d, "relit", {"ok": False, "error": repr(e)[:500]}, lock)
+    return {"relit": sum(_done(d, "relit") for d in _briefs(product)[:limit])}
+
+
 JUDGE_PROMPT = """You are judging product advertising images for a brand, blind. The first image is a REAL photo of the product: the exact {noun} the brand sells.{reference_note} Then come three candidate ads, labelled A, B and C, all made from the same brief:
 
 BRIEF: {brief}
@@ -306,7 +342,14 @@ JUDGE_SCHEMA = {
 }
 
 
-def judge(product: str, workers: int = 4, model: str | None = None) -> dict:
+def _judge_file(tag: str | None) -> str:
+    return f"judge_{tag}.json" if tag else "judge.json"
+
+
+def judge(product: str, workers: int = 4, model: str | None = None, arms: list[str] | None = None, tag: str | None = None) -> dict:
+    arms = arms or ARMS
+    if len(arms) != 3:
+        raise KeyError("the judge compares exactly three arms")
     from google import genai
     from google.genai import types
     model = model or setting("SHOTS_JUDGE_MODEL") or "gemini-3.1-pro-preview"
@@ -316,11 +359,11 @@ def judge(product: str, workers: int = 4, model: str | None = None) -> dict:
     client = genai.Client(api_key=setting("GEMINI_API_KEY"))
 
     def one(d: Path):
-        if (d / "judge.json").exists():
+        if (d / _judge_file(tag)).exists():
             return
-        if not all((d / f"{a}.png").exists() for a in ARMS):
+        if not all((d / f"{a}.png").exists() for a in arms):
             return
-        order = ARMS[:]
+        order = list(arms)
         random.Random(int(d.name)).shuffle(order)  # fixed per brief, different across briefs
         key = dict(zip("ABC", order))
         brief = json.loads((d / "brief.json").read_text())
@@ -336,7 +379,7 @@ def judge(product: str, workers: int = 4, model: str | None = None) -> dict:
                 data = json.loads(r.text)
                 result = {"model": model, "key": key, "raw": data,
                           "arms": {arm: {**data["candidates"][label], "rank": data["ranking"].index(label) + 1} for label, arm in key.items()}}
-                (d / "judge.json").write_text(json.dumps(result, indent=1))
+                (d / _judge_file(tag)).write_text(json.dumps(result, indent=1))
                 return
             except Exception as e:
                 err = repr(e)[:300]
@@ -345,7 +388,7 @@ def judge(product: str, workers: int = 4, model: str | None = None) -> dict:
 
     with ThreadPoolExecutor(workers) as pool:
         list(pool.map(one, _briefs(product)))
-    return {"judged": sum((d / "judge.json").exists() for d in _briefs(product))}
+    return {"judged": sum((d / _judge_file(tag)).exists() for d in _briefs(product))}
 
 
 ACCURACY_PROMPT = """The first image is the reference for a product: the exact {noun} the brand sells.{reference_note}
@@ -449,7 +492,7 @@ def accuracy_summary(product: str) -> dict:
 
 def _sheet(d: Path, judged: dict, out: Path, h: int = 520):
     tiles = []
-    for arm in ARMS:
+    for arm in judged["arms"]:
         im = Image.open(d / f"{arm}.png").convert("RGB")
         im = im.resize((round(im.width * h / im.height), h), Image.LANCZOS)
         j = judged["arms"][arm]
@@ -468,11 +511,12 @@ def _sheet(d: Path, judged: dict, out: Path, h: int = 520):
     sheet.save(out, quality=82)
 
 
-def report(product: str, out_dir: Path, examples: int = 6) -> dict:
+def report(product: str, out_dir: Path, examples: int = 6, arms: list[str] | None = None, tag: str | None = None) -> dict:
+    ARMS = arms or globals()["ARMS"]
     rows = []
     for d in _briefs(product):
-        if (d / "judge.json").exists():
-            rows.append((d, json.loads((d / "judge.json").read_text()), json.loads((d / "arms.json").read_text())))
+        if (d / _judge_file(tag)).exists():
+            rows.append((d, json.loads((d / _judge_file(tag)).read_text()), json.loads((d / "arms.json").read_text())))
     n = len(rows)
     dims = ["product_fidelity", "realism", "brief_match", "ad_appeal"]
     summary = {"briefs_judged": n, "arms": {}}
@@ -488,20 +532,23 @@ def report(product: str, out_dir: Path, examples: int = 6) -> dict:
             "low_product_fidelity_rate": round(sum(x["product_fidelity"] <= 3 for x in js) / n, 3),
             "mean_cost_usd": round(sum(costs) / n, 4), "mean_seconds": round(sum(secs) / n, 1),
         }
-    lf = [a["layout_first"]["verify"] for _, _, a in rows]
-    summary["layout_first_pixel_check"] = {"passed": sum(v["pass"] for v in lf), "of": len(lf)}
+    for arm in ("layout_first", "relit"):
+        if arm in ARMS:
+            checks = [a[arm]["verify"] for _, _, a in rows]
+            summary[f"{arm}_pixel_check"] = {"passed": sum(v["pass"] for v in checks), "of": len(checks)}
     out_dir.mkdir(parents=True, exist_ok=True)
     img_dir = out_dir / "examples"
     picks = []
     by_win = {arm: [r for r in rows if r[1]["arms"][arm]["rank"] == 1] for arm in ARMS}
     for arm in ARMS:
         picks += by_win[arm][: max(1, examples // 3)]
-    fails = sorted(rows, key=lambda r: r[1]["arms"]["full_model"]["product_fidelity"])[:2]
+    fails = sorted(rows, key=lambda r: r[1]["arms"]["full_model"]["product_fidelity"])[:2] if "full_model" in ARMS else []
     picks += [r for r in fails if r not in picks]
     for d, j, _ in picks:
         _sheet(d, j, img_dir / f"brief_{d.name}.jpg")
     summary["examples"] = [{"brief": d.name, "text": json.loads((d / "brief.json").read_text())["text"], "file": f"examples/brief_{d.name}.jpg",
                             "issues": {arm: j["arms"][arm]["worst_issue"] for arm in ARMS}} for d, j, _ in picks]
-    summary["product_accuracy"] = accuracy_summary(product)
+    if not tag:
+        summary["product_accuracy"] = accuracy_summary(product)
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=1))
     return summary

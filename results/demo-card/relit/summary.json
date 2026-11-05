@@ -1,0 +1,111 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 6.77,
+   "realism": 6.5,
+   "brief_match": 6.77,
+   "ad_appeal": 6.5,
+   "overall": 6.63,
+   "ship_rate": 0.733,
+   "win_rate": 0.8,
+   "low_product_fidelity_rate": 0.0,
+   "mean_cost_usd": 0.0922,
+   "mean_seconds": 50.1
+  },
+  "layout_first": {
+   "product_fidelity": 5.2,
+   "realism": 5.17,
+   "brief_match": 5.87,
+   "ad_appeal": 4.77,
+   "overall": 5.25,
+   "ship_rate": 0.167,
+   "win_rate": 0.167,
+   "low_product_fidelity_rate": 0.2,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 41.9
+  },
+  "relit": {
+   "product_fidelity": 4.47,
+   "realism": 5.07,
+   "brief_match": 5.8,
+   "ad_appeal": 4.3,
+   "overall": 4.91,
+   "ship_rate": 0.067,
+   "win_rate": 0.033,
+   "low_product_fidelity_rate": 0.3,
+   "mean_cost_usd": 0.1023,
+   "mean_seconds": 118.3
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "relit_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "002",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen at eye level, on a brown leather wallet open on a walnut desk, soft study light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The hologram bird logo is slightly simplified compared to the reference.",
+    "layout_first": "The card is lying flat on the wallet rather than standing on edge as requested.",
+    "relit": "The card is lying flat on the wallet rather than standing on edge as requested."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen from a high three-quarter view, on a boutique shop counter with shopping bags and a clothes rail blurred behind, bright retail light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The card stands on its edge without any visible physical support.",
+    "layout_first": "The card's aspect ratio is noticeably stretched horizontally.",
+    "relit": "The card's aspect ratio is noticeably stretched horizontally."
+   }
+  },
+  {
+   "brief": "000",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a caf\u00e9 counter next to a card payment terminal and a takeaway coffee, barista area blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The cards appear as flat graphics pasted onto the background without realistic lighting, shadows, or perspective.",
+    "layout_first": "The cards display an incorrect gold edge that is not present on the reference product.",
+    "relit": "The product incorrectly features gold edges and a gold hologram instead of the silver one shown in the reference."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a restaurant table with a folded bill, wine glasses and candles blurred behind, warm evening light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The folded bill requested in the brief is missing.",
+    "layout_first": "No significant issues present.",
+    "relit": "The card appears black instead of the required navy blue."
+   }
+  },
+  {
+   "brief": "013",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen from a high three-quarter view, on a co-working space table next to a phone and earbuds, bright modern office blurred behind. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_013.jpg",
+   "issues": {
+    "full_model": "The cards are rendered as thick slabs rather than thin cards and lack the diagonal stripe texture.",
+    "layout_first": "The cards feature an inaccurate silver edge and the signature panel lacks the correct formatting.",
+    "relit": "The cards feature an inaccurate silver edge and the signature panel lacks the correct formatting."
+   }
+  },
+  {
+   "brief": "017",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a taxi back seat, city lights blurred through the window, evening light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_017.jpg",
+   "issues": {
+    "full_model": "Incorrect gold borders have been added to the edges of both cards.",
+    "layout_first": "The subtle diagonal stripe texture on the navy background is missing.",
+    "relit": "Severe color tinting makes the magnetic stripe, signature box, and hologram appear gold."
+   }
+  }
+ ]
+}

@@ -34,8 +34,12 @@ def run(spec: dict, out_dir: Path, log_name: str) -> dict:
     spec_path.write_text(json.dumps(spec, indent=1))
     cmd = [str(blender), "-b", "--factory-startup", "--python-exit-code", "1", "-P", str(BUILD), "--", str(spec_path), str(out_dir)]
     log = out_dir / f"{log_name}.log"
-    with open(log, "w") as f:
-        done = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+    for _ in range(3):
+        with open(log, "w") as f:
+            done = subprocess.run(cmd, stdout=f, stderr=subprocess.STDOUT, env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1"})
+        # Blender on Apple GPUs sometimes aborts while compiling Metal kernels (SIGABRT, "NSURL ... nil string"); a rerun works.
+        if done.returncode != -6:
+            break
     if done.returncode:
         tail = "\n".join(log.read_text().splitlines()[-25:])
         raise SystemExit(f"Blender failed (exit {done.returncode}); last lines of {log}:\n{tail}")

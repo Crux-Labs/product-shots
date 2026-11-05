@@ -6,6 +6,8 @@ mode "layout" writes the three passes the pipeline needs:
     guide.png  the whole scene, sent to the image model as the layout
     layer.png  the products and the shadows they cast, everything else transparent (straight alpha)
     mask.png   alpha of the products alone
+With "environment" (an equirectangular image) the world lights and reflects that image instead of the plain studio sky, and with
+"layer_only" only layer.png is rendered: shots relight uses both to re-light the product to match the repainted room.
 mode "views" renders each product alone on grey from front, three-quarter and top, for the check sheet.
 """
 import json
@@ -121,7 +123,7 @@ def lights(spec, target):
     area_light("key", target, l.get("key_azimuth_deg", -55), l.get("key_elevation_deg", 35), 1.2, l.get("key_size_m", 0.8),
                40 * l.get("key_power", 1.0), l.get("key_color", (255, 246, 232)))
     if fill := l.get("fill", 0.3):
-        area_light("fill", target, l.get("key_azimuth_deg", -55) + 110, 20, 1.4, 1.2, 40 * fill, (232, 240, 255))
+        area_light("fill", target, l.get("key_azimuth_deg", -55) + 110, 20, 1.4, 1.2, 40 * fill, l.get("fill_color", (232, 240, 255)))
     world = bpy.data.worlds.new("world")
     world.use_nodes = True
     nodes, links = world.node_tree.nodes, world.node_tree.links
@@ -136,6 +138,19 @@ def lights(spec, target):
     links.new(xyz.outputs["Z"], ramp.inputs["Value"])
     links.new(ramp.outputs["Result"], bg.inputs["Strength"])
     bpy.context.scene.world = world
+
+
+def environment(path, strength):
+    """The world becomes the given panorama, so the product is lit by, and reflects, the room it will sit in."""
+    world = bpy.context.scene.world
+    nodes, links = world.node_tree.nodes, world.node_tree.links
+    for n in [n for n in nodes if n.type not in ("BACKGROUND", "OUTPUT_WORLD")]:
+        nodes.remove(n)
+    bg = nodes["Background"]
+    tex = nodes.new("ShaderNodeTexEnvironment")
+    tex.image = bpy.data.images.load(str(path))
+    links.new(tex.outputs["Color"], bg.inputs["Color"])
+    bg.inputs["Strength"].default_value = strength
 
 
 def set_pieces(spec):
@@ -164,6 +179,8 @@ def layout():
     cam_spec = SPEC.get("camera", {})
     camera(cam_spec, SPEC["page"])
     lights(SPEC, [v * MM for v in cam_spec.get("target_mm", [0, 0, 20])])
+    if SPEC.get("environment"):
+        environment(SPEC["environment"], SPEC.get("environment_strength", 0.5))
     sc.view_settings.exposure = r.get("exposure", 0.0)
     cy = sc.cycles
     cy.use_denoising = r.get("denoise", True)
@@ -172,11 +189,16 @@ def layout():
     sc.render.image_settings.file_format, sc.render.image_settings.color_mode = "PNG", "RGBA"
     samples = r.get("samples", 128)
     info = {"blender": bpy.app.version_string, "device": cy.device, "samples": samples, "page": SPEC["page"], "products": [o.name for o in products]}
-    info["guide_s"] = render(OUT / "guide.png", samples)
+    if not SPEC.get("layer_only"):
+        info["guide_s"] = render(OUT / "guide.png", samples)
     sc.render.film_transparent = True
     for o in env:
         o.is_shadow_catcher = True
     info["layer_s"] = render(OUT / "layer.png", samples)
+    if SPEC.get("layer_only"):
+        (OUT / "layout.json").write_text(json.dumps(info, indent=1))
+        print("SHOTS_LAYOUT", json.dumps(info))
+        return
     for o in env:
         o.is_shadow_catcher, o.is_holdout = False, True
     cy.use_denoising = False

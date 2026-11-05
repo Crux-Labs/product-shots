@@ -1,0 +1,111 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.37,
+   "realism": 6.57,
+   "brief_match": 6.43,
+   "ad_appeal": 6.0,
+   "overall": 6.09,
+   "ship_rate": 0.533,
+   "win_rate": 0.767,
+   "low_product_fidelity_rate": 0.4,
+   "mean_cost_usd": 0.0842,
+   "mean_seconds": 45.8
+  },
+  "layout_first": {
+   "product_fidelity": 4.1,
+   "realism": 5.1,
+   "brief_match": 6.47,
+   "ad_appeal": 4.6,
+   "overall": 5.07,
+   "ship_rate": 0.133,
+   "win_rate": 0.167,
+   "low_product_fidelity_rate": 0.533,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 77.8
+  },
+  "relit": {
+   "product_fidelity": 3.77,
+   "realism": 4.67,
+   "brief_match": 6.47,
+   "ad_appeal": 4.13,
+   "overall": 4.76,
+   "ship_rate": 0.067,
+   "win_rate": 0.067,
+   "low_product_fidelity_rate": 0.633,
+   "mean_cost_usd": 0.0946,
+   "mean_seconds": 157.6
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "relit_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two Harbor & Pine coffee tins side by side, standing upright, seen at eye level, on a warm oak kitchen counter next to a pour-over coffee maker and a mug, pale tiles behind, soft morning window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The camera angle is slightly above eye level, revealing the lids.",
+    "layout_first": "The label is missing all side panel text, including tasting notes and roast details.",
+    "relit": "The label is missing all side panel text, including tasting notes and roast details."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a high three-quarter view, on a caf\u00e9 counter with an espresso machine and cups blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The blurred background elements slightly intrude on the calm space intended for a headline.",
+    "layout_first": "The text on the lid is garbled and the camera angle is too low.",
+    "relit": "The tin looks like an unconvincing 3D render with illegible text on the lid."
+   }
+  },
+  {
+   "brief": "009",
+   "text": "Three Harbor & Pine coffee tins in a row, standing upright, seen from a low hero angle, on a seamless warm beige studio backdrop with a soft floor shadow, clean commercial light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_009.jpg",
+   "issues": {
+    "full_model": "Impossible perspective shows the top of the lids despite a low camera angle, and the lid text is garbled.",
+    "layout_first": "Reflections are slightly CG-like, but overall it is a solid commercial shot with good material definition.",
+    "relit": "The copper rims and sharp reflections give the tins a slightly artificial, rendered appearance."
+   }
+  },
+  {
+   "brief": "010",
+   "text": "Three Harbor & Pine coffee tins in a row, standing upright, seen at eye level, on a harbour wall by the sea at sunrise, fishing boats blurred behind, golden light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_010.jpg",
+   "issues": {
+    "full_model": "The wrap-around label is incorrectly squashed entirely onto the front face of the tins.",
+    "layout_first": "The front of the tins is too evenly lit considering the strong backlight from the sunrise.",
+    "relit": "Impossible bright reflections appear on the front of the tins despite the sun being behind them."
+   }
+  },
+  {
+   "brief": "007",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a low hero angle, on scattered roasted coffee beans on a dark slate surface, moody studio light with a warm rim light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_007.jpg",
+   "issues": {
+    "full_model": "The label is impossibly compressed to show all panels on the front, and the lid text is garbled.",
+    "layout_first": "The label proportions are incorrect, causing the brand and product names to wrap around and be cut off.",
+    "relit": "The label proportions are incorrect, causing the brand and product names to wrap around and be cut off."
+   }
+  },
+  {
+   "brief": "021",
+   "text": "One Harbor & Pine coffee tin standing upright, seen at eye level, on a rustic shelf in a pantry with jars blurred behind, warm cosy light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_021.jpg",
+   "issues": {
+    "full_model": "The lid text is hallucinated and duplicated, and the label layout is horizontally compressed.",
+    "layout_first": "The top copper border lines on the label are inverted compared to the reference.",
+    "relit": "The top copper border lines on the label are inverted compared to the reference."
+   }
+  }
+ ]
+}
