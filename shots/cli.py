@@ -131,10 +131,13 @@ def cmd_bench(args) -> int:
         emit({"briefs": bench.make_briefs(args.product, args.n)})
     elif args.step == "run":
         emit(bench.run(args.product, args.workers, args.limit))
+    elif args.step == "variant":
+        emit(bench.variant(args.product, args.name, args.briefs, args.workers, args.distance, args.lean, args.filter_width, args.samples, args.grain,
+                           args.deghost, args.key_color, args.exposure_shift))
     elif args.step == "relight":
         emit(bench.relight_all(args.product, args.workers, args.limit, args.neutral))
     elif args.step == "judge":
-        emit(bench.judge(args.product, args.workers, arms=args.arms, tag=args.tag))
+        emit(bench.judge(args.product, args.workers, arms=args.arms, tag=args.tag, repeat=args.repeat))
     elif args.step == "accuracy":
         emit(bench.accuracy(args.product, args.workers))
     else:
@@ -173,14 +176,25 @@ def main(argv=None) -> int:
     tx.add_argument("--wrap", type=float, default=150)
     tx.set_defaults(fn=cmd_texture)
     bn = sub.add_parser("bench")
-    bn.add_argument("step", choices=["briefs", "run", "relight", "judge", "accuracy", "report"])
+    bn.add_argument("step", choices=["briefs", "run", "variant", "relight", "judge", "accuracy", "report"])
     bn.add_argument("product")
     bn.add_argument("--n", type=int, default=100)
     bn.add_argument("--workers", type=int, default=4)
     bn.add_argument("--limit", type=int, help="run: only the first N briefs")
     bn.add_argument("--out", help="report: output folder (default results/<product>)")
     bn.add_argument("--arms", type=lambda v: v.split(","), help="judge/report: three arms to compare, e.g. full_model,layout_first,relit")
+    bn.add_argument("--name", default="v2", help="variant: arm name")
+    bn.add_argument("--briefs", type=lambda v: v.split(","), help="variant: only these brief ids, e.g. 000,002")
+    bn.add_argument("--distance", type=float, default=1.0, help="variant: camera distance scale (0.8 = closer)")
+    bn.add_argument("--lean", type=float, help="variant: lean in degrees for leaning products")
+    bn.add_argument("--filter-width", type=float, help="variant: Cycles pixel filter width (default 1.5)")
+    bn.add_argument("--samples", type=int, help="variant: render samples")
+    bn.add_argument("--grain", type=float, default=0.0, help="variant: film grain on the product layer, std in 0-255 levels")
+    bn.add_argument("--deghost", type=int, default=0, help="variant: refill this many px round the product (lighter pixels only)")
+    bn.add_argument("--exposure-shift", type=float, default=0.0, help="variant: add to the render exposure, in stops")
+    bn.add_argument("--key-color", type=lambda v: [int(c) for c in v.split(",")], help="variant: key light colour r,g,b")
     bn.add_argument("--neutral", action="store_true", help="relight: white light, grey reflections (arm relit_neutral)")
+    bn.add_argument("--repeat", type=int, default=1, help="judge: judge each brief this many times, ads in a new order each time")
     bn.add_argument("--tag", help="judge/report: name for this comparison, so its judgements sit beside the main ones")
     bn.set_defaults(fn=cmd_bench)
     args = p.parse_args(argv)

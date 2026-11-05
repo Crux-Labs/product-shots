@@ -55,3 +55,17 @@ def test_verify_catches_a_changed_product_pixel(tmp_path):
     Image.fromarray(img).save(tmp_path / "tampered.png")
     with pytest.raises(ProductPixelsChanged):
         verify(tmp_path / "tampered.png", tmp_path)
+
+
+def test_deghost_rebuilds_the_rim_but_keeps_the_shadow_underneath():
+    from shots.composite import deghost
+    H, W = 60, 60
+    mask = np.zeros((H, W)); mask[20:40, 20:40] = 1.0
+    env = np.full((H, W, 3), 0.8)
+    env[17:20, 20:40] = 0.3   # a dark ghost rim above the product
+    env[20:40, 17:20] = 0.95  # a light ghost rim on its left
+    env[40:43, 20:40] = 0.2   # the contact shadow under it
+    out = deghost(env, mask, px=4)
+    assert abs(out[18, 30, 0] - 0.8) < 0.05 and abs(out[30, 18, 0] - 0.8) < 0.05, "rims round the sides and top are rebuilt"
+    assert out[41, 30, 0] < 0.3, "the shadow under the product stays"
+    assert (out[:10] == env[:10]).all(), "nothing beyond the ring changes"

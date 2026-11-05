@@ -27,7 +27,7 @@ from .config import find_product, setting
 
 ARMS = ["full_model", "blender", "layout_first"]
 ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first", "relit": "Layout first, relit",
-             "relit_neutral": "Layout first, relit in white light"}
+             "relit_neutral": "Layout first, relit in white light", "v4": "Layout first, polished"}
 FORMATS = {"1:1": (1080, 1080), "4:5": (1080, 1350), "9:16": (1080, 1920)}
 # (scene prompt, floor colour, wall colour or None, light side)
 SCENES = [
@@ -281,6 +281,64 @@ def run(product: str, workers: int = 4, limit: int | None = None) -> dict:
     return {arm: sum(_done(d, arm) for d in briefs) for arm in ARMS} | {"briefs": len(briefs)}
 
 
+def variant(product: str, name: str, briefs: list[str] | None = None, workers: int = 4, distance: float = 1.0,
+            lean: float | None = None, filter_width: float | None = None, samples: int | None = None, grain: float = 0.0,
+            deghost_px: int = 0, key_color: list[int] | None = None, exposure_shift: float = 0.0) -> dict:
+    """Layout first again with changes, as its own arm: <brief>/<name>/ad.json and out/, <brief>/<name>.png.
+
+    distance scales the camera distance (0.8 = 20% closer), lean replaces a leaning product's lean, filter_width and samples go
+    to the render, grain adds film grain to the product layer before compositing, deghost_px refills the ring round the product
+    (see composite.deghost), key_color replaces the key light's colour. A closer camera never lets the group fill more than 85% of
+    the frame's width.
+    """
+    lock = threading.Lock()
+    todo = [d for d in _briefs(product) if (briefs is None or d.name in briefs) and not _done(d, name)]
+    pool = ThreadPoolExecutor(workers)
+    spec = json.loads((find_product(product) / "product.json").read_text())
+    width = 2 * max(r for r, _ in spec["profile_mm"]) if "profile_mm" in spec else spec["dimensions_mm"].get("width", spec["dimensions_mm"].get("diameter", 66))
+
+    def finish(d, out):
+        try:
+            ad_spec = json.loads((d / name / "ad.json").read_text())
+            meta = repaint.repaint(out, prompt.build(ad_spec["scene_prompt"], [spec.get("display_name", spec["name"])] * len(ad_spec["products"])), "openai")
+            if grain:
+                composite.grain(out, grain, seed=int(d.name))
+            check = composite.composite(out, deghost_px=deghost_px)
+            shutil.copy(out / "plate.png", d / f"{name}.png")
+            _record(d, name, {"ok": True, "cost_usd": meta["cost_usd"], "seconds": meta["seconds"], "verify": check["verify"]}, lock)
+        except Exception as e:
+            _record(d, name, {"ok": False, "error": repr(e)[:500]}, lock)
+
+    futures = []
+    for d in todo:
+        ad = json.loads((d / "ad.json").read_text())
+        page_w, page_h = ad["page"]
+        group = max(p["position_mm"][0] for p in ad["products"]) - min(p["position_mm"][0] for p in ad["products"]) + width * 1.1
+        fit = group / (0.85 * 36 * min(1, page_w / page_h) / ad["camera"]["lens_mm"])
+        ad["camera"]["distance_mm"] = round(max(ad["camera"]["distance_mm"] * distance, min(fit, ad["camera"]["distance_mm"])))
+        if key_color:
+            ad["light"] = {**ad["light"], "key_color": key_color}
+        ad["render"]["exposure"] = round(ad["render"].get("exposure", 0.0) + exposure_shift, 2)
+        if lean is not None:
+            for item in ad["products"]:
+                rx = item["rotation_deg"][0]
+                if rx:
+                    item["rotation_deg"][0] = lean if rx > 0 else -lean
+        ad["render"] = {**ad["render"], **({"filter_width": filter_width} if filter_width else {}), **({"samples": samples} if samples else {})}
+        (d / name).mkdir(exist_ok=True)
+        (d / name / "ad.json").write_text(json.dumps(ad, indent=1))
+        try:
+            blender.layout(d / name / "ad.json", d / name / "out")
+        except BaseException as e:
+            _record(d, name, {"ok": False, "error": repr(e)[:500]}, lock)
+            continue
+        futures.append(pool.submit(finish, d, d / name / "out"))
+    for f in futures:
+        f.result()
+    pool.shutdown()
+    return {name: sum(_done(d, name) for d in _briefs(product) if briefs is None or d.name in briefs)}
+
+
 def relight_all(product: str, workers: int = 4, limit: int | None = None, neutral: bool = False) -> dict:
     """Re-lights every finished layout-first ad. Light estimates run in parallel (once, shared by both variants), Blender one job
     at a time."""
@@ -345,11 +403,14 @@ JUDGE_SCHEMA = {
 }
 
 
-def _judge_file(tag: str | None) -> str:
-    return f"judge_{tag}.json" if tag else "judge.json"
+def _judge_file(tag: str | None, rep: int = 0) -> str:
+    return (f"judge_{tag}" if tag else "judge") + (f"_r{rep}" if rep else "") + ".json"
 
 
-def judge(product: str, workers: int = 4, model: str | None = None, arms: list[str] | None = None, tag: str | None = None) -> dict:
+def judge(product: str, workers: int = 4, model: str | None = None, arms: list[str] | None = None, tag: str | None = None,
+          repeat: int = 1) -> dict:
+    """repeat > 1 judges each brief again with the ads in a different order (judge_<tag>_r1.json, ...): one judgement of a few
+    briefs is too noisy to compare small changes."""
     arms = arms or ARMS
     if len(arms) != 3:
         raise KeyError("the judge compares exactly three arms")
@@ -361,13 +422,14 @@ def judge(product: str, workers: int = 4, model: str | None = None, arms: list[s
     ref = Image.open(folder / spec["reference_photo"]).convert("RGB")
     client = genai.Client(api_key=setting("GEMINI_API_KEY"))
 
-    def one(d: Path):
-        if (d / _judge_file(tag)).exists():
+    def one(job):
+        d, n = job
+        if (d / _judge_file(tag, n)).exists():
             return
         if not all((d / f"{a}.png").exists() for a in arms):
             return
         order = list(arms)
-        random.Random(int(d.name)).shuffle(order)  # fixed per brief, different across briefs
+        random.Random(int(d.name) + 1000 * n).shuffle(order)  # fixed per brief and repeat, different across them
         key = dict(zip("ABC", order))
         brief = json.loads((d / "brief.json").read_text())
         contents = [ref] + [x for label, arm in key.items() for x in (f"Candidate {label}:", Image.open(d / f"{arm}.png").convert("RGB"))]
@@ -382,7 +444,7 @@ def judge(product: str, workers: int = 4, model: str | None = None, arms: list[s
                 data = json.loads(r.text)
                 result = {"model": model, "key": key, "raw": data,
                           "arms": {arm: {**data["candidates"][label], "rank": data["ranking"].index(label) + 1} for label, arm in key.items()}}
-                (d / _judge_file(tag)).write_text(json.dumps(result, indent=1))
+                (d / _judge_file(tag, n)).write_text(json.dumps(result, indent=1))
                 return
             except Exception as e:
                 err = repr(e)[:300]
@@ -390,8 +452,8 @@ def judge(product: str, workers: int = 4, model: str | None = None, arms: list[s
         (d / "judge_error.txt").write_text(err)
 
     with ThreadPoolExecutor(workers) as pool:
-        list(pool.map(one, _briefs(product)))
-    return {"judged": sum((d / _judge_file(tag)).exists() for d in _briefs(product))}
+        list(pool.map(one, [(d, r) for d in _briefs(product) for r in range(repeat)]))
+    return {"judged": sum((d / _judge_file(tag, r)).exists() for d in _briefs(product) for r in range(repeat))}
 
 
 ACCURACY_PROMPT = """The first image is the reference for a product: the exact {noun} the brand sells.{reference_note}
@@ -502,7 +564,7 @@ def _sheet(d: Path, judged: dict, out: Path, h: int = 520):
         tile = Image.new("RGB", (im.width, h + 64), "white")
         tile.paste(im, (0, 64))
         draw = ImageDraw.Draw(tile)
-        draw.text((6, 6), f"{ARM_NAMES[arm]}  ·  rank {j['rank']}  ·  {'ship' if j['ship'] else 'no ship'}", fill=(0, 0, 0))
+        draw.text((6, 6), f"{ARM_NAMES.get(arm, arm)}  ·  rank {j['rank']}  ·  {'ship' if j['ship'] else 'no ship'}", fill=(0, 0, 0))
         draw.text((6, 26), f"product {j['product_fidelity']:g} · real {j['realism']:g} · brief {j['brief_match']:g} · appeal {j['ad_appeal']:g}", fill=(60, 60, 60))
         tiles.append(tile)
     sheet = Image.new("RGB", (sum(t.width for t in tiles) + 20 * (len(tiles) - 1), h + 64), "white")
@@ -535,7 +597,7 @@ def report(product: str, out_dir: Path, examples: int = 6, arms: list[str] | Non
             "low_product_fidelity_rate": round(sum(x["product_fidelity"] <= 3 for x in js) / n, 3),
             "mean_cost_usd": round(sum(costs) / n, 4), "mean_seconds": round(sum(secs) / n, 1),
         }
-    for arm in ("layout_first", "relit", "relit_neutral"):
+    for arm in ("layout_first", "relit", "relit_neutral", "v4"):
         if arm in ARMS:
             checks = [a[arm]["verify"] for _, _, a in rows]
             summary[f"{arm}_pixel_check"] = {"passed": sum(v["pass"] for v in checks), "of": len(checks)}

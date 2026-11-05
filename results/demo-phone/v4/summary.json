@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 6.38,
+   "realism": 6.38,
+   "brief_match": 6.83,
+   "ad_appeal": 6.43,
+   "overall": 6.51,
+   "ship_rate": 0.6,
+   "win_rate": 0.7,
+   "low_product_fidelity_rate": 0.033,
+   "mean_cost_usd": 0.092,
+   "mean_seconds": 46.6
+  },
+  "layout_first": {
+   "product_fidelity": 5.75,
+   "realism": 5.63,
+   "brief_match": 6.57,
+   "ad_appeal": 5.48,
+   "overall": 5.86,
+   "ship_rate": 0.367,
+   "win_rate": 0.2,
+   "low_product_fidelity_rate": 0.1,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 40.7
+  },
+  "v4": {
+   "product_fidelity": 5.1,
+   "realism": 5.03,
+   "brief_match": 6.5,
+   "ad_appeal": 4.7,
+   "overall": 5.33,
+   "ship_rate": 0.167,
+   "win_rate": 0.1,
+   "low_product_fidelity_rate": 0.133,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 38.3
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "v4_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two sage green Orra One phones side by side, standing upright, leaning slightly back, the left one showing its screen and the right one its back, seen at eye level, on a light oak desk beside a laptop, a ceramic coffee cup and a notebook, bright Scandinavian home office blurred behind, soft window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "Background details are slightly soft.",
+    "layout_first": "Lighting on the right phone is flat.",
+    "v4": "Right phone is missing a camera sensor and appears pasted in."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its back, seen at eye level, on a caf\u00e9 table by a big window, a flat white in a cup and a croissant, blurred street outside, warm morning light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The contact shadow where the phone meets the wooden table lacks perfect realism.",
+    "layout_first": "The fine text on the lower back is garbled and the phone appears to float slightly above the table.",
+    "v4": "The small text at the bottom of the device is distorted and illegible."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its screen, seen from a high three-quarter view, on a white marble kitchen counter, bright minimal kitchen blurred behind, soft morning daylight. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The phone displays an incorrect two-button configuration on its right edge.",
+    "layout_first": "The physical buttons on the side edges of the phone are missing.",
+    "v4": "Heavy glare washes out the screen and there is a strange texture on the right edge."
+   }
+  },
+  {
+   "brief": "006",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its screen, seen at eye level, on a concrete ledge on a city rooftop at sunset, skyline blurred behind, warm golden light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_006.jpg",
+   "issues": {
+    "full_model": "Incorrect physical button configuration on the right edge.",
+    "layout_first": "The requested slight backward lean is barely perceptible.",
+    "v4": "The phone lacks 3D volume and appears as a flat cutout."
+   }
+  },
+  {
+   "brief": "004",
+   "text": "Two sage green Orra One phones side by side, standing upright, leaning slightly back, the left one showing its screen and the right one its back, seen at eye level, on a seamless pastel peach studio backdrop with a soft floor shadow, clean commercial studio light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_004.jpg",
+   "issues": {
+    "full_model": "Phones appear to float due to unnatural contact shadows.",
+    "layout_first": "The phone frame is gold instead of dark green.",
+    "v4": "No significant issues."
+   }
+  },
+  {
+   "brief": "018",
+   "text": "Two sage green Orra One phones side by side, standing upright, leaning slightly back, the left one showing its screen and the right one its back, seen from a high three-quarter view, on a sunlit windowsill with a potted plant, city blurred outside, bright morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_018.jpg",
+   "issues": {
+    "full_model": "The bottom left corner of the right phone floats slightly above the surface.",
+    "layout_first": "The right phone floats above the surface and the bottom text is garbled.",
+    "v4": "The camera lenses on the back appear slightly larger than the reference."
+   }
+  },
+  {
+   "brief": "025",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its screen, seen from a low hero angle, on a seamless deep green studio backdrop with a soft floor shadow, dramatic side light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_025.jpg",
+   "issues": {
+    "full_model": "Side buttons do not match the reference product.",
+    "layout_first": "Contact shadow is slightly unnatural.",
+    "v4": "Lighting lacks the requested dramatic side light."
+   }
+  }
+ ]
+}

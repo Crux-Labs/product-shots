@@ -29,6 +29,9 @@ FINISHES = {
     "frosted_glass": {"Roughness": 0.6, "Specular IOR Level": 0.05, "Coat Weight": 0.03, "Coat Roughness": 0.3},
     # Soft-touch laminate on a printed card: almost no sheen, so dark inks stay dark under a bright sky.
     "soft_touch": {"Roughness": 0.7, "Specular IOR Level": 0.04},
+    # The thin edge of a card or a phone's anodised frame: seen at grazing angles, any sheen turns it into a bright rim, so almost none.
+    "edge_matte": {"Roughness": 0.9, "Specular IOR Level": 0.0},
+    "anodised": {"Roughness": 0.55, "Metallic": 0.25, "Specular IOR Level": 0.15},
 }
 
 

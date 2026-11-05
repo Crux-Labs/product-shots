@@ -1,0 +1,131 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 6.93,
+   "realism": 6.63,
+   "brief_match": 6.9,
+   "ad_appeal": 6.57,
+   "overall": 6.76,
+   "ship_rate": 0.767,
+   "win_rate": 0.8,
+   "low_product_fidelity_rate": 0.033,
+   "mean_cost_usd": 0.0922,
+   "mean_seconds": 50.1
+  },
+  "layout_first": {
+   "product_fidelity": 5.37,
+   "realism": 5.13,
+   "brief_match": 6.03,
+   "ad_appeal": 4.83,
+   "overall": 5.34,
+   "ship_rate": 0.167,
+   "win_rate": 0.067,
+   "low_product_fidelity_rate": 0.1,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 41.9
+  },
+  "v4": {
+   "product_fidelity": 5.23,
+   "realism": 5.03,
+   "brief_match": 5.8,
+   "ad_appeal": 4.63,
+   "overall": 5.17,
+   "ship_rate": 0.267,
+   "win_rate": 0.133,
+   "low_product_fidelity_rate": 0.3,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 40.0
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "v4_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a caf\u00e9 counter next to a card payment terminal and a takeaway coffee, barista area blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "Cards lack realistic contact shadows and appear pasted in.",
+    "layout_first": "Hologram is a flat graphic and cards have incorrect gold edges.",
+    "v4": "Small text on the card back is completely garbled."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen at eye level, on a brown leather wallet open on a walnut desk, soft study light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The hologram sticker lacks a bit of the iridescent pop seen in the reference.",
+    "layout_first": "The card is lying flat on the wallet instead of standing on edge as requested.",
+    "v4": "Shows two cards lying flat instead of a single card standing on edge."
+   }
+  },
+  {
+   "brief": "015",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen at eye level, on a black slate surface with soft reflections, dark luxury studio light with a rim light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_015.jpg",
+   "issues": {
+    "full_model": "The card appears flat and poorly integrated with the background lighting.",
+    "layout_first": "Minor lighting imperfections on the card surface.",
+    "v4": "The card feels slightly thin and less grounded in the scene."
+   }
+  },
+  {
+   "brief": "016",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen from a high three-quarter view, on a bookshop counter with stacked books blurred behind, warm cosy light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_016.jpg",
+   "issues": {
+    "full_model": "The background books are sharply in focus with legible titles, violating the brief and cluttering the space intended for a headline.",
+    "layout_first": "The card is missing the signature strip pattern and appears somewhat flat and pasted in.",
+    "v4": "The card lacks the signature strip pattern and its flat lighting makes it feel slightly pasted into the scene."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a restaurant table with a folded bill, wine glasses and candles blurred behind, warm evening light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The scene omits the requested folded bill, featuring a folded napkin instead.",
+    "layout_first": "The card features an incorrect metallic edge and lacks the subtle diagonal texture of the reference.",
+    "v4": "The scene omits the requested folded bill, featuring a folded napkin instead."
+   }
+  },
+  {
+   "brief": "005",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a hotel reception desk in marble, elegant lobby blurred behind, warm luxurious light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_005.jpg",
+   "issues": {
+    "full_model": "The card appears as a flat, two-dimensional plane lacking realistic thickness.",
+    "layout_first": "An incorrect gold rim has been added to the edge of the card.",
+    "v4": "The card leans backward without any visible physical support."
+   }
+  },
+  {
+   "brief": "011",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a farmers' market stall counter with fruit crates blurred behind, bright morning sun. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_011.jpg",
+   "issues": {
+    "full_model": "The 'KESTREL' text is missing from the top right corner on the back of the card.",
+    "layout_first": "The image shows four cards stacked instead of the two requested in the brief.",
+    "v4": "The cards have thick, invented gold edges not present on the real product."
+   }
+  },
+  {
+   "brief": "009",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen from a high three-quarter view, on a white marble surface with gold jewellery and a watch nearby, luxurious soft light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_009.jpg",
+   "issues": {
+    "full_model": "The hologram bird on the back card is rendered black instead of silver.",
+    "layout_first": "The cards are lying flat and look like thick plastic tiles with unnatural white edges.",
+    "v4": "The cards are lying flat instead of standing on edge, failing the brief's pose requirement."
+   }
+  }
+ ]
+}

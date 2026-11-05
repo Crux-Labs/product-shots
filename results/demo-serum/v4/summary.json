@@ -1,0 +1,111 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.67,
+   "realism": 6.13,
+   "brief_match": 6.52,
+   "ad_appeal": 5.58,
+   "overall": 5.97,
+   "ship_rate": 0.533,
+   "win_rate": 0.6,
+   "low_product_fidelity_rate": 0.333,
+   "mean_cost_usd": 0.0848,
+   "mean_seconds": 45.1
+  },
+  "layout_first": {
+   "product_fidelity": 4.67,
+   "realism": 5.55,
+   "brief_match": 6.38,
+   "ad_appeal": 4.73,
+   "overall": 5.33,
+   "ship_rate": 0.133,
+   "win_rate": 0.233,
+   "low_product_fidelity_rate": 0.3,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 43.8
+  },
+  "v4": {
+   "product_fidelity": 4.7,
+   "realism": 5.32,
+   "brief_match": 6.18,
+   "ad_appeal": 4.5,
+   "overall": 5.17,
+   "ship_rate": 0.1,
+   "win_rate": 0.167,
+   "low_product_fidelity_rate": 0.333,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 38.3
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "v4_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two Lumea Vitamin C serum boxs side by side, standing upright, seen at eye level, on a white marble bathroom shelf with a folded towel and a eucalyptus sprig, soft morning window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "Showing the back panel with the barcode is slightly unconventional for a primary ad image.",
+    "layout_first": "The arch graphic on the right box is the wrong color and the side text is garbled.",
+    "v4": "The small text on the side panel of the right box is distorted and illegible."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "Two Lumea Vitamin C serum boxs side by side, standing upright, seen from a low hero angle, on a travertine block on a seamless sand-coloured backdrop, hard sunlight with palm-leaf shadows. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "No significant issues.",
+    "layout_first": "The small text at the bottom of the side panels is garbled.",
+    "v4": "The small text at the bottom of the side panels is completely garbled."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One Lumea Vitamin C serum box standing upright, seen at eye level, on the edge of a bathtub with bubbles and candles blurred behind, warm spa light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The box geometry is physically impossible, showing three sides simultaneously.",
+    "layout_first": "The box lacks 3D perspective, appearing somewhat flat and pasted into the scene.",
+    "v4": "The product appears as a flat 2D plane without natural 3D depth or perspective."
+   }
+  },
+  {
+   "brief": "008",
+   "text": "One Lumea Vitamin C serum box standing upright, seen from a high three-quarter view, on a pharmacy shelf with neat rows of skincare blurred behind, clean bright retail light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_008.jpg",
+   "issues": {
+    "full_model": "The box geometry is physically impossible, hallucinating a triangular structure to display three vertical panels simultaneously.",
+    "layout_first": "The camera angle is a straight-on front view rather than the requested high three-quarter view.",
+    "v4": "The box shape is distorted, tapering towards the top like a wedge instead of being a standard rectangular carton."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One Lumea Vitamin C serum box standing upright, seen from a high three-quarter view, on a vanity table with a round mirror and a ceramic dish of rings blurred behind, warm soft light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The box has an impossible, non-rectangular geometry that displays three panels simultaneously.",
+    "layout_first": "The text at the bottom of the side panel has incorrect perspective, and the cast shadow is unnaturally harsh.",
+    "v4": "There is a very slight softness to the text on the side panel, but otherwise it is an excellent generation."
+   }
+  },
+  {
+   "brief": "005",
+   "text": "One Lumea Vitamin C serum box standing upright, seen from a low hero angle, on a seamless sage green studio backdrop with water ripples reflected on the floor, fresh bright light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_005.jpg",
+   "issues": {
+    "full_model": "Box geometry is physically impossible, showing three vertical panels simultaneously.",
+    "layout_first": "Box proportions appear slightly narrower than the reference artwork.",
+    "v4": "Minor lighting flatness on the front panel."
+   }
+  }
+ ]
+}

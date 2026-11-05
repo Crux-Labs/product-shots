@@ -100,10 +100,32 @@ That lost too. The colour complaints went away, and new ones came in: "harsh, ar
 
 `shots relight` (and `--neutral`) stay in the repo as experiments, off by default. Results: `results/demo-card/relit/`, `results/demo-coffee/relit/` and the `relit_neutral/` folders beside them.
 
+## Polish test: tuning on five briefs didn't carry over
+
+We then tried to close the gap by polishing layout first, tuning on five briefs (phone, two cards, serum, coffee) and checking on all 120. The judge's notes on layout first pointed at five fixable things, and the polished version (`v4`) fixed all of them:
+
+- **A pale or copper rim round the product.** The image model draws its own product slightly bigger behind ours; `shots bench variant --deghost` rebuilds a thin ring round the product from the room beyond it (keeping the contact shadow underneath).
+- **Soft small print:** a sharper pixel filter (1.0 instead of 1.5).
+- **"Standing vertically, not leaning":** an 18° lean for the phone and card instead of 10-15°.
+- **Small products:** the camera 15% closer, capped so the group never fills more than 85% of the frame.
+- **Peach turning yellow:** a white key light, and the serum box's exposure lowered so its pale print stops clipping.
+
+Three judgements per brief on the five briefs put the polished version 0.1-0.2 points ahead of plain layout first, inside the judge's noise. On all 120 briefs it came out slightly behind:
+
+| All four products, 120 briefs | Image model | Layout first | Layout first, polished |
+|---|---|---|---|
+| Ranked first | 69% | 18% | 13% |
+| Would ship | 59% | 18% | 15% |
+| Overall (1-10) | 6.29 | 5.39 | 5.16 |
+| Pixel check | n/a | 120 / 120 | 120 / 120 |
+
+The judge's notes on the polished ads say "flat cutout", "lacks 3D volume", "pasted in" more often: the image model's rim we removed was also what made the product read as a solid object sitting in the room. Two lessons: a five-brief dev set can't steer changes this small (one judgement of the same image swung from 3 to 7 on product), and the remaining gap isn't a list of small defects. The tools stay in `shots bench` (`variant`, `--deghost`, `--grain`, `judge --repeat`), off by default; numbers in `results/<product>/v4/`.
+
 ## What would close the gap
 
 - **Check the material before making ads:** render the product under a few bench lights and compare its printed colours with the reference automatically. The card's grey would have been caught before any money was spent.
-- **Integration rather than light** (relighting is ruled out above): contact shadows and reflections on the surface the product stands on, hero framing that fills the frame, and styling layers in 3D (condensation, reflections).
+- **Swap the order: start from the image model's ad.** Relighting and polishing are both ruled out above; what the image model does better is place the product in the room. So let it draw the whole ad, find where and how it placed the product, render our exact product at that pose, put it over the model's version and rebuild any of the room the model's (often wrongly shaped) product covered. The product pixels still come only from the 3D model.
+- **Guard the repaint against extra products:** some repaints drew more cards than the brief asked for, outside our mask. A check that counts products in the finished ad would catch it.
 
 ## Reproduce
 

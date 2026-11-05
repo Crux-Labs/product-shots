@@ -186,6 +186,10 @@ def layout():
     cy.use_denoising = r.get("denoise", True)
     if cy.use_denoising:
         cy.denoiser = "OPENIMAGEDENOISE"
+        # Albedo and normal guides with the accurate prefilter keep printed detail; colour alone smears small text.
+        cy.denoising_input_passes, cy.denoising_prefilter = "RGB_ALBEDO_NORMAL", "ACCURATE"
+    # Pixel filter width: Cycles' default 1.5 px softens small print; about 1.0 keeps it crisp without stair-stepping.
+    cy.filter_width = r.get("filter_width", 1.5)
     sc.render.image_settings.file_format, sc.render.image_settings.color_mode = "PNG", "RGBA"
     samples = r.get("samples", 128)
     info = {"blender": bpy.app.version_string, "device": cy.device, "samples": samples, "page": SPEC["page"], "products": [o.name for o in products]}
