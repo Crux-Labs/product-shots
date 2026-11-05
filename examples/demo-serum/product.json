@@ -1,0 +1,41 @@
+{
+  "name": "demo-serum",
+  "display_name": "Lumea Vitamin C serum box",
+  "template": "box",
+  "dimensions_mm": {
+    "width": 44,
+    "depth": 44,
+    "height": 117.3
+  },
+  "faces": {
+    "front": "kit/front.jpg",
+    "back": "kit/back.jpg",
+    "left": "kit/side.jpg",
+    "right": "kit/side.jpg"
+  },
+  "body_color": [
+    251,
+    243,
+    232
+  ],
+  "finish": "paper",
+  "bevel_mm": 0.6,
+  "reference_photo": "kit/reference.jpg",
+  "bench": {
+    "noun": "box",
+    "scenes": "beauty",
+    "reference_note": "The reference is the box's flat print artwork: front, side and back panels.",
+    "check": [
+      "front: LUMEA wordmark",
+      "front: Vitamin C",
+      "front: Brightening Serum",
+      "front: 15% Vitamin C + Ferulic Acid",
+      "front: Vegan · Fragrance free · Daily with three icons",
+      "front: 30 ml e 1.0 fl oz",
+      "side: LUMEA running vertically",
+      "side: Dermatologist tested / Made in France / lumea.example"
+    ],
+    "exposure": -1.2
+  },
+  "notes": "Made-up demo product. Its print artwork was drawn once by an image model (examples/draw_products.py); from then on that artwork is the product, and every ad takes product pixels only from it, through the 3D model."
+}

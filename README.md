@@ -50,27 +50,27 @@ Details: [docs/how-it-works.md](docs/how-it-works.md).
 
 We tested this against the two obvious approaches, and against the reverse order, on live ads from real brands, judged blind. Full write-up: [docs/results.md](docs/results.md).
 
-- **Image model alone:** the most photographic results, and the riskiest. On lesser-known products it drew a misspelt brand logo, an outdated logo on a product that doesn't exist, and a memory card at twice its real size. On a world-famous product with a clean reference (a Coca-Cola can) it copies the label very well. You never know which you'll get, so every image needs a person to check the product.
+- **Image model alone:** the most photographic results, and the riskiest. On lesser-known products it drew a misspelt brand logo, an outdated logo on a product that doesn't exist, and a memory card at twice its real size. On a world-famous product (a Coca-Cola can) or a flat one seen straight on (a phone, a card) it copies the label very well; on tins and cartons it often gets the shape and the wrap wrong. You never know which you'll get, so every image needs a person to check the product.
 - **Blender alone:** the product is always right, and simple graphic scenes work. Rooms, props and hands look like a render, and building each scene is slow.
 - **Plate first** (the model paints an empty room, then Blender lights the product to match it): came last. Lighting the product from the room dulled brand colours, and the room's scale shrank the products.
-- **Layout first** (this repo): won the blind test on ads from three brands whose 3D models came from clean product photos. The product is guaranteed, and the room looks real. It lost the Coca-Cola benchmark below, a world-famous product the image model draws well, where our studio-lit can looked pasted into location scenes.
+- **Layout first** (this repo): won the blind test on ads from three brands whose 3D models came from clean product photos. The product is guaranteed, and the room looks real. In the five-product benchmark below it won 2-43% of briefs: least on Coca-Cola, a world-famous can the image model draws well, most on a carton the image model kept folding wrong.
 - **Its weak spots:** the 3D model is the ceiling (a cut-off logo, a label that only covers the front, or light baked into the photo all show up, exactly), the image model sometimes redraws the product slightly bigger behind ours (a faint "ghost" edge), and products keep their Blender light, so a hard-sun room can look mismatched.
 
-### Coca-Cola benchmark
+### Benchmark: five products
 
 <!-- BENCH:START -->
-100 generated briefs for the classic Coca-Cola can, three arms, judged blind by Gemini 3.1 Pro:
+![The product, the image model's ad and layout first's ad for the same brief](docs/img/bench_products.jpg)
 
-| | Image model draws the ad | Blender only | Layout first |
-|---|---|---|---|
-| Ranked first | **98 %** | 0 % | 2 % |
-| Would ship | **78 %** | 0 % | 0 % |
-| Product score (1-10) | **6.7** | 3.9 | 4.2 |
-| Realism (1-10) | **7.0** | 3.4 | 4.8 |
-| Product pixels exact | not checked | yes | **100 / 100** |
-| Cost per image | $0.08 | $0 | $0.09 |
+Five products, three methods each, judged blind by Gemini 3.1 Pro. Four of the products are made up (drawn once by an image model, then frozen), so the repo can show every image:
 
-**The image model won this one.** We ran it twice. The first can model was cut from one hand-held ad photo, with a cut-off logo and the photo's light baked in. Rebuilding it from a full vector label with a printed-metal finish more than halved layout first's bad product scores (82% → 35%), but it didn't change the result. What's left is light and styling. Our can keeps its studio light and stays dry. The image model lights the can with the scene and adds condensation, on a product it has seen countless times. Full write-up, both runs and what would close the gap: [results/coca-cola/report.md](results/coca-cola/report.md).
+| | Coca-Cola | Phone | Card | Serum box | Coffee tin |
+|---|---|---|---|---|---|
+| Ranked first, image model / layout first | 98% / 2% | 67% / 33% | 90% / 10% | 57% / 43% | 70% / 30% |
+| Would ship, image model / layout first | 78% / 0% | 70% / 40% | 86% / 10% | 57% / 33% | 40% / 17% |
+| Image model's product scored 3 or less | 6% | 0% | 0% | **37%** | **37%** |
+| Layout first product pixels exact | 100 / 100 | 30 / 30 | 29 / 29 | 30 / 30 | 30 / 30 |
+
+**The image model wins more briefs on every product, by how much depends on the product.** It copies flat things seen straight on (the phone, the card, down to the card's small print) almost perfectly. When it has to wrap or fold the artwork into 3D, it breaks the product: squat tins with every label panel squeezed onto the front, garbled lid text ("COFEYERS"), cartons with three panels pasted across one wide face. Those are believable photos a brand can't run. Layout first keeps every product pixel, but its product keeps Blender's light, and our card and phone materials still render too pale. Full write-up: [results/report.md](results/report.md); Coca-Cola details: [results/coca-cola/report.md](results/coca-cola/report.md).
 <!-- BENCH:END -->
 
 ## Quickstart
@@ -95,7 +95,7 @@ The first time, Claude Code asks whether you trust this folder. Say yes: that tu
 
 ## What works today
 
-- **Products:** boxes, cartons, tins, cans, jars, bottles, cards and other simple shapes with printed labels. Templates: `box` and `cylinder` (with a profile for bottles, jars and cans). See [docs/templates.md](docs/templates.md).
+- **Products:** boxes, cartons, tins, cans, jars, bottles, phones, cards and other simple shapes with printed surfaces. Templates: `box`, `cylinder` (with a profile for bottles, jars and cans) and `slab` (round-cornered flat things with a front and a back). See [docs/templates.md](docs/templates.md).
 - **Not yet:** pouches, tubes, odd shapes (each needs a template), products held in hands, and text overlay without the optional Playwright install.
 
 ## Without Claude Code

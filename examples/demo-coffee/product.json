@@ -1,0 +1,19 @@
+{
+  "name": "demo-coffee",
+  "display_name": "Harbor & Pine coffee tin",
+  "template": "cylinder",
+  "profile_mm": [[49.2, 0], [50, 1.2], [50, 5], [50, 135.1], [50, 138.8], [49.2, 140]],
+  "side": {"texture": "kit/label.jpg", "wrap_deg": 360, "z_from_mm": 5, "z_to_mm": 135.1},
+  "top": {"texture": "kit/lid.png", "color": [184, 115, 75], "finish": "metal", "from_mm": 135.1},
+  "bottom": {"color": [184, 115, 75], "finish": "metal", "to_mm": 5},
+  "body_color": [17, 36, 72],
+  "finish": "glossy",
+  "reference_photo": "kit/reference.jpg",
+  "bench": {
+    "noun": "tin", "scenes": "home", "reference_note": "The reference is the tin's flat wrap-around label and its lid seen from above.",
+    "check": ["label: lighthouse and pines emblem", "label: HARBOR & PINE", "label: Coffee Roasters", "label: MORNING TIDE",
+              "label: MEDIUM ROAST · WHOLE BEAN", "label: NET WT 12 OZ (340 g)", "label: Tasting notes panel (Milk chocolate, Toasted hazelnut, Orange zest)",
+              "label: Roasted in Portland, Maine / Single origin · Colombia Huila", "lid: copper lid with emblem and HARBOR & PINE"]
+  },
+  "notes": "Made-up demo product. Its label and lid were drawn once by an image model (examples/draw_products.py); from then on that artwork is the product, and every ad takes product pixels only from it, through the 3D model."
+}

@@ -1,0 +1,69 @@
+{
+  "name": "demo-phone",
+  "display_name": "sage green Orra One phone",
+  "template": "slab",
+  "dimensions_mm": {
+    "width": 72,
+    "height": 145.9,
+    "depth": 8.2
+  },
+  "corner_radius_mm": 9.5,
+  "bevel_mm": 1.6,
+  "faces": {
+    "front": "kit/front.jpg",
+    "back": "kit/back.jpg"
+  },
+  "face_finish": {
+    "front": "glass",
+    "back": "frosted_glass"
+  },
+  "emit": {
+    "front": 1.0
+  },
+  "raised": [
+    {
+      "face": "back",
+      "box": [
+        0.0549,
+        0.026,
+        0.5371,
+        0.2678
+      ],
+      "radius_mm": 5,
+      "depth_mm": 1.5
+    }
+  ],
+  "body_color": [
+    78,
+    110,
+    92
+  ],
+  "finish": "aluminium",
+  "reference_photo": "kit/reference.jpg",
+  "bench": {
+    "noun": "phone",
+    "scenes": "tech",
+    "stance": "standing upright, leaning slightly back",
+    "lean_deg": 10,
+    "counts": [
+      1,
+      2
+    ],
+    "sides": {
+      "front": "its screen",
+      "back": "its back"
+    },
+    "reference_note": "The reference shows its front and its back.",
+    "check": [
+      "back: orra wordmark",
+      "back: camera island with three lenses and flash",
+      "back: 50MP f/1.8",
+      "back: Designed by Orra in Lisbon",
+      "back: Model OR-1 · 256 GB",
+      "screen: Tuesday 5 November",
+      "screen: 9:41",
+      "screen: sage and peach wave wallpaper"
+    ]
+  },
+  "notes": "Made-up demo product. Its front and back were drawn once by an image model (examples/draw_products.py); from then on those two photos are the product, and every ad takes product pixels only from them, through the 3D model."
+}

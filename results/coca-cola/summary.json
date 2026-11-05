@@ -83,5 +83,29 @@
     "layout_first": "The Coca-Cola logo script is slightly garbled and inaccurate upon close inspection."
    }
   }
- ]
+ ],
+ "product_accuracy": {
+  "full_model": {
+   "ads": 100,
+   "exact_rate": 0.4,
+   "item_accuracy": 0.728,
+   "items_wrong_rate": 0.272,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.308,
+   "invented_rate": 0.11,
+   "shape_ok_rate": 0.98,
+   "colour_ok_rate": 1.0
+  },
+  "layout_first": {
+   "ads": 100,
+   "exact_rate": 0.13,
+   "item_accuracy": 0.392,
+   "items_wrong_rate": 0.568,
+   "items_missing_rate": 0.041,
+   "items_not_visible_rate": 0.408,
+   "invented_rate": 0.22,
+   "shape_ok_rate": 0.84,
+   "colour_ok_rate": 0.94
+  }
+ }
 }

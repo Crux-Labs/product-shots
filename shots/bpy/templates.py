@@ -6,6 +6,8 @@ Every template textures the model with the product's own photos, so labels and l
     cylinder  tins, cans, jars, bottles: dimensions_mm {diameter, height} or profile_mm [[radius, z], ...] from the base up,
               side {texture, wrap_deg, turn_deg, z_from_mm, z_to_mm}, top {texture and/or color, finish, from_mm, tab},
               bottom {color, finish, to_mm}
+    slab      phones, cards, tablets, flat round-cornered things: dimensions_mm {width, height, depth}, corner_radius_mm,
+              faces {front, back}, face_finish {front, back}, emit {front: strength}, raised [{face, box, radius_mm, depth_mm}]
 """
 import math
 from pathlib import Path
@@ -22,6 +24,9 @@ FINISHES = {
     # Bare can or tin metal, and ink printed on it under a clear varnish (drinks cans, printed tins).
     "aluminium": {"Roughness": 0.2, "Metallic": 1.0},
     "printed_metal": {"Roughness": 0.22, "Metallic": 1.0, "Coat Weight": 0.6, "Coat Roughness": 0.04},
+    # Phone screens and glass backs.
+    "glass": {"Roughness": 0.08, "Coat Weight": 0.15, "Coat Roughness": 0.03},
+    "frosted_glass": {"Roughness": 0.55, "Specular IOR Level": 0.15, "Coat Weight": 0.05, "Coat Roughness": 0.3},
 }
 
 
@@ -37,8 +42,12 @@ def _socket(node, identifier):
     return next(s for s in list(node.inputs) + list(node.outputs) if s.identifier == identifier)
 
 
-def material(name, color, finish, texture=None, clip=False):
-    """Principled material in the product's finish. With a texture, the image is the colour; with clip, UVs outside 0-1 show color."""
+def material(name, color, finish, texture=None, clip=False, emit=0.0):
+    """Principled material in the product's finish. With a texture, the image is the colour; with clip, UVs outside 0-1 show color.
+
+    emit makes the texture glow at that strength, for a screen that is switched on: the screen's colour is its own light, so the
+    surface underneath is black and room light only adds the glass's reflections.
+    """
     mat = bpy.data.materials.new(name)
     mat.use_nodes = True
     nodes, links = mat.node_tree.nodes, mat.node_tree.links
@@ -57,7 +66,12 @@ def material(name, color, finish, texture=None, clip=False):
         links.new(tex.outputs["Alpha"], _socket(mix, "Factor_Float"))
         _socket(mix, "A_Color").default_value = linear(color)
         links.new(tex.outputs["Color"], _socket(mix, "B_Color"))
-        links.new(_socket(mix, "Result_Color"), bsdf.inputs["Base Color"])
+        if emit:
+            bsdf.inputs["Base Color"].default_value = (0.005, 0.005, 0.005, 1.0)
+            links.new(_socket(mix, "Result_Color"), bsdf.inputs["Emission Color"])
+            bsdf.inputs["Emission Strength"].default_value = emit
+        else:
+            links.new(_socket(mix, "Result_Color"), bsdf.inputs["Base Color"])
         if finish == "printed_metal":
             # Coloured ink is thin, so the metal shines through it; white and black inks are opaque, so no metal there.
             hsv = nodes.new("ShaderNodeSeparateColor")
@@ -183,6 +197,8 @@ def cylinder(spec, name, segments=128):
 
 def _rounded_rect(cx, cy, w, h, r, steps=6):
     """Outline points of a rounded rectangle, anticlockwise, metres."""
+    if r <= 0:
+        return [(cx + w / 2, cy + h / 2), (cx - w / 2, cy + h / 2), (cx - w / 2, cy - h / 2), (cx + w / 2, cy - h / 2)]
     pts = []
     for qx, qy, a0 in ((1, 1, 0), (-1, 1, 90), (-1, -1, 180), (1, -1, 270)):
         ox, oy = cx + qx * (w / 2 - r), cy + qy * (h / 2 - r)
@@ -214,7 +230,61 @@ def pull_tab(can, lid_z, mat, name):
         part["shots_product"] = True
 
 
-TEMPLATES = {"box": box, "cylinder": cylinder}
+def slab(spec, name, steps=12):
+    """A flat round-cornered block standing on its bottom edge: the front image faces -Y, the back image +Y, the edge is body_color.
+
+    raised: blocks on a face (a phone's camera island), each its own part with a small bevel. box is [left, top, right, bottom] as
+    fractions of that face's image, so the block's top shows exactly the pixels it covers.
+    """
+    d = spec["dimensions_mm"]
+    w, h, t = d["width"] * MM, d["height"] * MM, d["depth"] * MM
+    color, finish = spec.get("body_color", [40, 40, 40]), spec.get("finish", "aluminium")
+    textures, finishes, emit = spec.get("faces", {}), spec.get("face_finish", {}), spec.get("emit", {})
+    mats, index = [material(f"{name}_edge", color, finish)], {}
+    for face in ("front", "back"):
+        if textures.get(face):
+            index[face] = len(mats)
+            mats.append(material(f"{name}_{face}", color, finishes.get(face, finish), textures[face], emit=emit.get(face, 0.0)))
+    # Planar UVs: the front image as seen from the front, the back image as seen from behind (so its left is +X).
+    uv = {"front": lambda x, z: (0.5 + x / w, z / h), "back": lambda x, z: (0.5 - x / w, z / h)}
+
+    def prism(part, outline, y_front, y_back, caps, bevel):
+        n = len(outline)
+        verts = [(x, y_front, z) for x, z in outline] + [(x, y_back, z) for x, z in outline]
+        faces = [(k, n + k, n + (k + 1) % n, (k + 1) % n) for k in range(n)]
+        uvs, mat_index = [[(0, 0)] * 4] * n, [0] * n
+        for face in caps:
+            ring = list(range(n)) if face == "front" else list(range(2 * n - 1, n - 1, -1))
+            faces.append(tuple(ring))
+            uvs.append([uv[face](verts[v][0], verts[v][2]) for v in ring])
+            mat_index.append(index.get(face, 0))
+        obj = _mesh_object(part, verts, faces, uvs, mat_index, mats)
+        if bevel:
+            mod = obj.modifiers.new("bevel", "BEVEL")
+            mod.width, mod.segments, mod.limit_method, mod.harden_normals = bevel * MM, 4, "ANGLE", True
+            obj.data.shade_smooth()
+        return obj
+
+    r = min(spec.get("corner_radius_mm", 0) * MM, w / 2 - 1e-5, h / 2 - 1e-5)
+    body = prism(name, _rounded_rect(0, h / 2, w, h, r, steps), -t / 2, t / 2, ("front", "back"), spec.get("bevel_mm", 0.5))
+    for n, block in enumerate(spec.get("raised", [])):
+        left, top, right, bottom = block["box"]
+        side = block.get("face", "back")
+        # Image fractions to model x: the back image is mirrored, as seen from behind.
+        xs = [(f - 0.5) * w * (1 if side == "front" else -1) for f in (left, right)]
+        zs = [(1 - f) * h for f in (top, bottom)]
+        bw, bh = abs(xs[1] - xs[0]), abs(zs[1] - zs[0])
+        br = min(block.get("radius_mm", 0) * MM, bw / 2 - 1e-5, bh / 2 - 1e-5)
+        outline = _rounded_rect(sum(xs) / 2, sum(zs) / 2, bw, bh, br, steps)
+        depth = block.get("depth_mm", 1.0) * MM
+        y0, y1 = (-t / 2 - depth, -t / 2) if side == "front" else (t / 2, t / 2 + depth)
+        part = prism(f"{name}_raised{n}", outline, y0, y1, (side,), min(block.get("bevel_mm", 0.3), depth / MM / 2))
+        part.parent = body
+        part["shots_product"] = True
+    return body
+
+
+TEMPLATES = {"box": box, "cylinder": cylinder, "slab": slab}
 
 
 def build(spec, name):

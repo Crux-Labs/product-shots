@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.23,
+   "realism": 6.8,
+   "brief_match": 6.7,
+   "ad_appeal": 6.07,
+   "overall": 6.2,
+   "ship_rate": 0.4,
+   "win_rate": 0.7,
+   "low_product_fidelity_rate": 0.367,
+   "mean_cost_usd": 0.0842,
+   "mean_seconds": 45.8
+  },
+  "blender": {
+   "product_fidelity": 4.03,
+   "realism": 3.47,
+   "brief_match": 3.37,
+   "ad_appeal": 3.1,
+   "overall": 3.49,
+   "ship_rate": 0.0,
+   "win_rate": 0.0,
+   "low_product_fidelity_rate": 0.5,
+   "mean_cost_usd": 0.0,
+   "mean_seconds": 176.2
+  },
+  "layout_first": {
+   "product_fidelity": 4.5,
+   "realism": 5.5,
+   "brief_match": 6.7,
+   "ad_appeal": 4.97,
+   "overall": 5.42,
+   "ship_rate": 0.167,
+   "win_rate": 0.3,
+   "low_product_fidelity_rate": 0.433,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 77.8
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two Harbor & Pine coffee tins side by side, standing upright, seen at eye level, on a warm oak kitchen counter next to a pour-over coffee maker and a mug, pale tiles behind, soft morning window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The camera angle is slightly above eye level to show the lids, slightly reducing the requested calm space at the top.",
+    "blender": "The image completely ignores the environmental requirements of the brief, presenting a basic 3D render on a plain background.",
+    "layout_first": "The tins lack the detailed lid design from the reference and the label text is cut off on the right tin."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a high three-quarter view, on a caf\u00e9 counter with an espresso machine and cups blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The lid's copper color appears slightly more saturated than the reference.",
+    "blender": "Completely ignores the requested cafe setting and features garbled text on the lid.",
+    "layout_first": "The text on the lid and sides of the tin is garbled and illegible."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One Harbor & Pine coffee tin standing upright, seen at eye level, on a wooden picnic table at a lakeside campsite, tent and pine trees blurred behind, early morning mist. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The label layout is incorrectly compressed to show all side panels on the front.",
+    "blender": "Completely ignores the requested lakeside campsite setting.",
+    "layout_first": "The tin looks slightly like a 3D render pasted into the photographic background."
+   }
+  },
+  {
+   "brief": "007",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a low hero angle, on scattered roasted coffee beans on a dark slate surface, moody studio light with a warm rim light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_007.jpg",
+   "issues": {
+    "full_model": "The label layout is incorrectly rearranged and the text on the lid is garbled.",
+    "blender": "Completely ignores the requested environment, props, and lighting.",
+    "layout_first": "The lighting and materials have a slightly artificial, computer-generated quality."
+   }
+  },
+  {
+   "brief": "023",
+   "text": "Two Harbor & Pine coffee tins side by side, standing upright, seen from a high three-quarter view, on a seamless navy studio backdrop with a soft floor shadow, premium studio light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_023.jpg",
+   "issues": {
+    "full_model": "The lid features hallucinated and misspelled words like 'COFEYERS', and the label wrapping is physically impossible.",
+    "blender": "The backdrop is not seamless, revealing a distinct horizon line that ruins the studio look.",
+    "layout_first": "The text on the product's lid is severely distorted and illegible."
+   }
+  }
+ ],
+ "product_accuracy": {
+  "full_model": {
+   "ads": 30,
+   "exact_rate": 0.2,
+   "item_accuracy": 0.83,
+   "items_wrong_rate": 0.17,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.022,
+   "invented_rate": 0.167,
+   "shape_ok_rate": 1.0,
+   "colour_ok_rate": 1.0
+  },
+  "layout_first": {
+   "ads": 30,
+   "exact_rate": 0.533,
+   "item_accuracy": 0.857,
+   "items_wrong_rate": 0.138,
+   "items_missing_rate": 0.005,
+   "items_not_visible_rate": 0.274,
+   "invented_rate": 0.067,
+   "shape_ok_rate": 0.967,
+   "colour_ok_rate": 1.0
+  }
+ }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "demo-card",
+  "display_name": "navy Kestrel Reserve credit card",
+  "template": "slab",
+  "dimensions_mm": {
+    "width": 85.6,
+    "height": 51.9,
+    "depth": 0.76
+  },
+  "corner_radius_mm": 2.8,
+  "bevel_mm": 0.2,
+  "faces": {
+    "front": "kit/front.jpg",
+    "back": "kit/back.jpg"
+  },
+  "face_finish": {
+    "front": "matte",
+    "back": "matte"
+  },
+  "body_color": [
+    18,
+    28,
+    52
+  ],
+  "finish": "matte",
+  "reference_photo": "kit/reference.jpg",
+  "bench": {
+    "noun": "card",
+    "scenes": "wallet",
+    "stance": "standing on edge, leaning slightly back",
+    "lean_deg": 15,
+    "counts": [
+      1,
+      2
+    ],
+    "sides": {
+      "front": "its front",
+      "back": "its back"
+    },
+    "reference_note": "The reference shows its front and its back.",
+    "check": [
+      "front: kestrel bird logo and KESTREL wordmark",
+      "front: Reserve",
+      "front: 8812 4471 0093 5526",
+      "front: VALID THRU 08/29",
+      "front: JORDAN ELLIS",
+      "front: NOVA star mark",
+      "front: chip and contactless symbol",
+      "back: magnetic stripe and signature strip with 417",
+      "back: hologram kestrel",
+      "back: three lines of issuer small print"
+    ]
+  },
+  "notes": "Made-up demo product with a made-up bank, network and number. Its front and back were drawn once by an image model (examples/draw_products.py); from then on those two photos are the product, and every ad takes product pixels only from them, through the 3D model."
+}

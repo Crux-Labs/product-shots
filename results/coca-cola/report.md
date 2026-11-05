@@ -51,6 +51,10 @@ Run 2 reused run 1's image-model ads (same reference photo, same prompts) and re
 
 The judge's notes on layout first changed too. Run 1 was about the label: 49 notes on mapping or seams, 47 on a cut-off logo. In run 2, 62 of 100 notes are about light, finish or looking artificial ("lacks the condensation seen in the reference", "incorrect metallic finish").
 
+## Product accuracy check
+
+A second pass checked each ad on its own against the reference photo, item by item (logo, "ORIGINAL TASTE", "12 FL OZ (355 mL)", lid and tab). The image model's script logo was wrong in 43 of 100 ads and "12 FL OZ" in 49; 11 ads carried text the can doesn't have (mostly "Delicious & Refreshing" moved to the front); 40% of its ads were right on every item. Layout first scored lower on this check (13%), but not because pixels changed: our can is a rebuild from the wordmark, not the real print file, so the checker counts our label's differences from the photo, and reads the logo bending round the can as "cut off". The four made-up products in [../report.md](../report.md) don't have that problem, because there the 3D model is built from the reference itself.
+
 ## Why layout first still loses here
 
 1. **Studio light on a location photo.** The can keeps the light Blender gave it, and the image model only repaints around it. On a sunny picnic table or a stadium at sunset, the can is still lit like a studio packshot. The image model, drawing everything at once, lights the can with the scene.

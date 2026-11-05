@@ -40,3 +40,14 @@ def test_printed_can_with_tab_renders(tmp_path):
     blender.layout(tmp_path / "ad.json", tmp_path / "out")
     mask = np.asarray(Image.open(tmp_path / "out/mask.png").getchannel("A"))
     assert (mask == 255).sum() > 500
+
+
+def test_slab_with_raised_block_renders(tmp_path):
+    """A phone: round-cornered slab, glowing screen in front, a camera island standing proud of the back."""
+    ad = {"page": [120, 160], "render": {"samples": 4, "denoise": False},
+          "products": [{"product": str(ROOT / "examples/demo-phone"), "rotation_deg": [10, 0, 200]}],
+          "camera": {"lens_mm": 60, "distance_mm": 500, "height_mm": 120, "target_mm": [0, 0, 70]}}
+    (tmp_path / "ad.json").write_text(json.dumps(ad))
+    blender.layout(tmp_path / "ad.json", tmp_path / "out")
+    mask = np.asarray(Image.open(tmp_path / "out/mask.png").getchannel("A"))
+    assert (mask == 255).sum() > 500

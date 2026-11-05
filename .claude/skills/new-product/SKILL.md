@@ -23,10 +23,11 @@ Create `products/<name>/kit/` and ask them to put the photos there (or copy file
 ## 2. Pick a template
 
 Read `docs/templates.md`. Today:
-- `box`: cartons, boxes, cards, flat devices
+- `box`: cartons and boxes
 - `cylinder`: tins, cans, jars, bottles (with `profile_mm` for shoulders and necks)
+- `slab`: phones, cards, tablets and other flat round-cornered things, with a front and a back image (`examples/demo-phone`, `examples/demo-card`)
 
-If the product fits neither, say so, and offer the closest template or adding a new one (`docs/templates.md` explains how).
+If the product fits none of them, say so, and offer the closest template or adding a new one (`docs/templates.md` explains how).
 
 ## 3. Cut textures from the photos
 

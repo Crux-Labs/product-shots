@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 29,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 7.24,
+   "realism": 7.07,
+   "brief_match": 7.1,
+   "ad_appeal": 7.03,
+   "overall": 7.11,
+   "ship_rate": 0.862,
+   "win_rate": 0.897,
+   "low_product_fidelity_rate": 0.0,
+   "mean_cost_usd": 0.0935,
+   "mean_seconds": 50.6
+  },
+  "blender": {
+   "product_fidelity": 5.24,
+   "realism": 4.0,
+   "brief_match": 3.45,
+   "ad_appeal": 3.34,
+   "overall": 4.01,
+   "ship_rate": 0.0,
+   "win_rate": 0.0,
+   "low_product_fidelity_rate": 0.103,
+   "mean_cost_usd": 0.0,
+   "mean_seconds": 158.1
+  },
+  "layout_first": {
+   "product_fidelity": 4.62,
+   "realism": 5.07,
+   "brief_match": 6.21,
+   "ad_appeal": 4.52,
+   "overall": 5.1,
+   "ship_rate": 0.103,
+   "win_rate": 0.103,
+   "low_product_fidelity_rate": 0.276,
+   "mean_cost_usd": 0.0935,
+   "mean_seconds": 47.8
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 29,
+  "of": 29
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a caf\u00e9 counter next to a card payment terminal and a takeaway coffee, barista area blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The cards appear perfectly vertical instead of leaning slightly back.",
+    "blender": "Completely ignores the caf\u00e9 scene requirements of the brief.",
+    "layout_first": "The cards are the wrong color, lack texture, and have an incorrect gold rim."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen at eye level, on a brown leather wallet open on a walnut desk, soft study light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The card is tucked into the wallet fold rather than standing freely on its edge.",
+    "blender": "The scene is missing the requested wallet and desk, and the card is the wrong color.",
+    "layout_first": "The card is lying flat instead of standing on edge and appears artificially pasted onto the wallet."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a restaurant table with a folded bill, wine glasses and candles blurred behind, warm evening light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The prominent wine glass on the right reduces the calm space available for a headline.",
+    "blender": "The image completely ignores the requested restaurant setting and background elements.",
+    "layout_first": "The background elements could be slightly less distracting for optimal headline placement."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen from a high three-quarter view, on a boutique shop counter with shopping bags and a clothes rail blurred behind, bright retail light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The card appears slightly flat and has a stark white edge that detracts from the premium feel.",
+    "blender": "Completely ignores the requested boutique environment, placing the card in a white void.",
+    "layout_first": "The background at the top is somewhat busy, limiting the calm space requested for a headline."
+   }
+  },
+  {
+   "brief": "005",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a hotel reception desk in marble, elegant lobby blurred behind, warm luxurious light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_005.jpg",
+   "issues": {
+    "full_model": "The text reflection on the marble desk is garbled and does not match the card.",
+    "blender": "The image completely ignores the requested hotel lobby setting, using a plain background instead.",
+    "layout_first": "The card features an invented thick gold edge not present on the real product, and the reflection is garbled."
+   }
+  }
+ ],
+ "product_accuracy": {
+  "full_model": {
+   "ads": 29,
+   "exact_rate": 1.0,
+   "item_accuracy": 1.0,
+   "items_wrong_rate": 0.0,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.228,
+   "invented_rate": 0.0,
+   "shape_ok_rate": 1.0,
+   "colour_ok_rate": 1.0
+  },
+  "layout_first": {
+   "ads": 30,
+   "exact_rate": 0.233,
+   "item_accuracy": 0.829,
+   "items_wrong_rate": 0.171,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.22,
+   "invented_rate": 0.233,
+   "shape_ok_rate": 0.933,
+   "colour_ok_rate": 0.4
+  }
+ }
+}

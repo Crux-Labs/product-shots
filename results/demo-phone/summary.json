@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 6.73,
+   "realism": 6.87,
+   "brief_match": 6.57,
+   "ad_appeal": 6.7,
+   "overall": 6.72,
+   "ship_rate": 0.7,
+   "win_rate": 0.667,
+   "low_product_fidelity_rate": 0.0,
+   "mean_cost_usd": 0.092,
+   "mean_seconds": 46.6
+  },
+  "blender": {
+   "product_fidelity": 5.6,
+   "realism": 3.97,
+   "brief_match": 3.33,
+   "ad_appeal": 3.6,
+   "overall": 4.12,
+   "ship_rate": 0.0,
+   "win_rate": 0.0,
+   "low_product_fidelity_rate": 0.2,
+   "mean_cost_usd": 0.0,
+   "mean_seconds": 169.2
+  },
+  "layout_first": {
+   "product_fidelity": 5.4,
+   "realism": 6.1,
+   "brief_match": 6.5,
+   "ad_appeal": 5.77,
+   "overall": 5.94,
+   "ship_rate": 0.4,
+   "win_rate": 0.333,
+   "low_product_fidelity_rate": 0.2,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 47.8
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two sage green Orra One phones side by side, standing upright, leaning slightly back, the left one showing its screen and the right one its back, seen at eye level, on a light oak desk beside a laptop, a ceramic coffee cup and a notebook, bright Scandinavian home office blurred behind, soft window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "No significant issues.",
+    "blender": "Completely missing the requested desk, props, and home office background.",
+    "layout_first": "The product color is noticeably lighter and more yellowish than the reference."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its back, seen at eye level, on a caf\u00e9 table by a big window, a flat white in a cup and a croissant, blurred street outside, warm morning light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The space left at the top for a headline is slightly busy with background elements.",
+    "blender": "Completely ignores the brief's environmental requirements and features garbled product text.",
+    "layout_first": "The storage capacity text on the back of the phone is misspelled as '25s GB'."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its screen, seen from a high three-quarter view, on a white marble kitchen counter, bright minimal kitchen blurred behind, soft morning daylight. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "Shows an incorrect button configuration on the right edge of the phone.",
+    "blender": "Completely ignores the requested kitchen environment and marble counter.",
+    "layout_first": "The physical buttons on the side frame of the phone are missing."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its back, seen from a high three-quarter view, on a bedside table next to a small lamp and a book, cosy bedroom blurred behind, warm evening lamp light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The phone's size in frame leaves less calm space at the top for a headline.",
+    "blender": "Ignores the requested bedside table setting and lighting.",
+    "layout_first": "The camera angle is slightly lower than a true high three-quarter view."
+   }
+  },
+  {
+   "brief": "008",
+   "text": "One sage green Orra One phone standing upright, leaning slightly back, showing its screen, seen at eye level, on a co-working space table with a keyboard and plants blurred behind, bright modern daylight. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_008.jpg",
+   "issues": {
+    "full_model": "The phone incorrectly shows two buttons on the right side instead of one.",
+    "blender": "The requested co-working space background and props are completely missing.",
+    "layout_first": "The phone is standing vertically instead of leaning slightly back."
+   }
+  }
+ ],
+ "product_accuracy": {
+  "full_model": {
+   "ads": 30,
+   "exact_rate": 1.0,
+   "item_accuracy": 1.0,
+   "items_wrong_rate": 0.0,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.242,
+   "invented_rate": 0.0,
+   "shape_ok_rate": 1.0,
+   "colour_ok_rate": 1.0
+  },
+  "layout_first": {
+   "ads": 30,
+   "exact_rate": 0.5,
+   "item_accuracy": 0.813,
+   "items_wrong_rate": 0.187,
+   "items_missing_rate": 0.0,
+   "items_not_visible_rate": 0.242,
+   "invented_rate": 0.0,
+   "shape_ok_rate": 0.967,
+   "colour_ok_rate": 0.9
+  }
+ }
+}

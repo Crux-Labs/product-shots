@@ -12,6 +12,8 @@ def rectify(photo: Path, corners: list[tuple[float, float]], out: Path, size: tu
     # PIL's QUAD takes the source corners in the order top-left, bottom-left, bottom-right, top-right.
     quad = (*tl, *bl, *br, *tr)
     face = Image.open(photo).convert("RGBA").transform(size, Image.QUAD, quad, Image.BICUBIC)
+    if out.suffix.lower() in (".jpg", ".jpeg"):
+        face = face.convert("RGB")
     out.parent.mkdir(parents=True, exist_ok=True)
     face.save(out)
     return out

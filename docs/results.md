@@ -22,3 +22,7 @@ Limits: model judges, not people or live ad spend; one round, 7-12 ads. Products
 ## Coca-Cola benchmark (100 briefs)
 
 A larger, single-product run went the other way: the image model drawing the whole ad was ranked first on 98 of 100 briefs, layout first on 2. We ran it twice. Rebuilding the can model, with a full vector label and a printed-metal finish in place of a cut from one ad photo, more than halved layout first's bad product scores (82% → 35%), and every product pixel stayed exact. It didn't change the ranking. Our can keeps Blender's studio light and stays dry. The image model lights the can with the scene and adds condensation, on a product it has seen countless times. Details: [results/coca-cola/report.md](../results/coca-cola/report.md).
+
+## Five products (Coca-Cola plus four made-up products)
+
+We added a phone, a credit card, a serum carton and a coffee tin, all made up, 30 briefs each, plus a strict item-by-item product check. The image model was ranked first on 57-90% of their briefs (layout first 10-43%). It copied flat faces seen straight on exactly, but on the carton and the tin it got the shape wrong in over a third of ads (panels squeezed onto one face, squat tins, garbled lid text). Details: [results/report.md](../results/report.md).

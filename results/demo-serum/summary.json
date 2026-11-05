@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.53,
+   "realism": 6.23,
+   "brief_match": 6.57,
+   "ad_appeal": 5.5,
+   "overall": 5.96,
+   "ship_rate": 0.567,
+   "win_rate": 0.567,
+   "low_product_fidelity_rate": 0.367,
+   "mean_cost_usd": 0.0848,
+   "mean_seconds": 45.1
+  },
+  "blender": {
+   "product_fidelity": 5.33,
+   "realism": 4.1,
+   "brief_match": 3.4,
+   "ad_appeal": 3.57,
+   "overall": 4.1,
+   "ship_rate": 0.0,
+   "win_rate": 0.0,
+   "low_product_fidelity_rate": 0.2,
+   "mean_cost_usd": 0.0,
+   "mean_seconds": 166.6
+  },
+  "layout_first": {
+   "product_fidelity": 5.4,
+   "realism": 5.93,
+   "brief_match": 6.57,
+   "ad_appeal": 5.57,
+   "overall": 5.87,
+   "ship_rate": 0.333,
+   "win_rate": 0.433,
+   "low_product_fidelity_rate": 0.2,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 43.8
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two Lumea Vitamin C serum boxs side by side, standing upright, seen at eye level, on a white marble bathroom shelf with a folded towel and a eucalyptus sprig, soft morning window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "No significant issues.",
+    "blender": "Completely missing the requested environment and props.",
+    "layout_first": "The right box has incorrect perspective and appears pasted into the scene."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "Two Lumea Vitamin C serum boxs side by side, standing upright, seen from a low hero angle, on a travertine block on a seamless sand-coloured backdrop, hard sunlight with palm-leaf shadows. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "No significant issues; the image perfectly executes the brief and maintains high product fidelity.",
+    "blender": "Fails to include the travertine block and palm leaf shadows requested in the brief.",
+    "layout_first": "The small text on the side panels is garbled and illegible."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One Lumea Vitamin C serum box standing upright, seen from a high three-quarter view, on a vanity table with a round mirror and a ceramic dish of rings blurred behind, warm soft light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The box geometry is completely hallucinated, merging the front and side panels onto a single wide front face.",
+    "blender": "The image completely ignores the scene requirements from the brief, showing only the product on a plain background.",
+    "layout_first": "The framing could leave slightly more calm space at the top for the headline."
+   }
+  },
+  {
+   "brief": "003",
+   "text": "One Lumea Vitamin C serum box standing upright, seen at eye level, on the edge of a bathtub with bubbles and candles blurred behind, warm spa light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_003.jpg",
+   "issues": {
+    "full_model": "The box has impossible geometry, showing three vertical panels simultaneously.",
+    "blender": "Completely ignores the requested spa background scene.",
+    "layout_first": "Lighting could be slightly more dynamic."
+   }
+  },
+  {
+   "brief": "021",
+   "text": "One Lumea Vitamin C serum box standing upright, seen at eye level, on a wet pebble beside a still pool of water, soft green foliage blurred behind, dewy morning light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_021.jpg",
+   "issues": {
+    "full_model": "Box geometry is completely wrong, displaying all panels on one wide face.",
+    "blender": "Completely ignores the environmental requirements of the brief.",
+    "layout_first": "Box edges appear slightly too sharp and perfect."
+   }
+  }
+ ],
+ "product_accuracy": {
+  "full_model": {
+   "ads": 30,
+   "exact_rate": 0.867,
+   "item_accuracy": 0.991,
+   "items_wrong_rate": 0.0,
+   "items_missing_rate": 0.009,
+   "items_not_visible_rate": 0.033,
+   "invented_rate": 0.1,
+   "shape_ok_rate": 1.0,
+   "colour_ok_rate": 1.0
+  },
+  "layout_first": {
+   "ads": 30,
+   "exact_rate": 0.467,
+   "item_accuracy": 0.918,
+   "items_wrong_rate": 0.078,
+   "items_missing_rate": 0.004,
+   "items_not_visible_rate": 0.037,
+   "invented_rate": 0.033,
+   "shape_ok_rate": 1.0,
+   "colour_ok_rate": 0.967
+  }
+ }
+}
