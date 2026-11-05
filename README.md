@@ -53,24 +53,24 @@ We tested this against the two obvious approaches, and against the reverse order
 - **Image model alone:** the most photographic results, and the riskiest. On lesser-known products it drew a misspelt brand logo, an outdated logo on a product that doesn't exist, and a memory card at twice its real size. On a world-famous product with a clean reference (a Coca-Cola can) it copies the label very well. You never know which you'll get, so every image needs a person to check the product.
 - **Blender alone:** the product is always right, and simple graphic scenes work. Rooms, props and hands look like a render, and building each scene is slow.
 - **Plate first** (the model paints an empty room, then Blender lights the product to match it): came last. Lighting the product from the room dulled brand colours, and the room's scale shrank the products.
-- **Layout first** (this repo): won the blind test on ads from three brands whose 3D models came from clean product photos. The product is guaranteed, and the room looks real. It lost the Coca-Cola benchmark below, where the 3D model came from one hand-held ad photo.
+- **Layout first** (this repo): won the blind test on ads from three brands whose 3D models came from clean product photos. The product is guaranteed, and the room looks real. It lost the Coca-Cola benchmark below, a world-famous product the image model draws well, where our studio-lit can looked pasted into location scenes.
 - **Its weak spots:** the 3D model is the ceiling (a cut-off logo, a label that only covers the front, or light baked into the photo all show up, exactly), the image model sometimes redraws the product slightly bigger behind ours (a faint "ghost" edge), and products keep their Blender light, so a hard-sun room can look mismatched.
 
 ### Coca-Cola benchmark
 
 <!-- BENCH:START -->
-100 generated briefs for the classic Coca-Cola can, three arms, judged blind by Gemini 3.1 Pro (99 briefs kept):
+100 generated briefs for the classic Coca-Cola can, three arms, judged blind by Gemini 3.1 Pro:
 
 | | Image model draws the ad | Blender only | Layout first |
 |---|---|---|---|
 | Ranked first | **98 %** | 0 % | 2 % |
-| Would ship | **66 %** | 0 % | 0 % |
-| Product score (1-10) | **5.9** | 3.1 | 3.2 |
-| Realism (1-10) | **7.0** | 3.1 | 4.5 |
-| Product pixels exact | not checked | yes | **99 / 99** |
+| Would ship | **78 %** | 0 % | 0 % |
+| Product score (1-10) | **6.7** | 3.9 | 4.2 |
+| Realism (1-10) | **7.0** | 3.4 | 4.8 |
+| Product pixels exact | not checked | yes | **100 / 100** |
 | Cost per image | $0.08 | $0 | $0.09 |
 
-**The image model won this one.** Layout first kept every product pixel exact, but those were the pixels of a weak 3D model. It was built from one hand-held ad photo that shows only part of the logo ("ca-Col") and 130° of the can, with the photo's water drops and highlights baked in. The image model, given the same photo, often filled in the famous logo from memory. Lesson: layout first is only as good as the product model, and a famous product is the image model's best case. Full write-up and what a fair rerun needs: [results/coca-cola/report.md](results/coca-cola/report.md).
+**The image model won this one.** We ran it twice. The first can model was cut from one hand-held ad photo, with a cut-off logo and the photo's light baked in. Rebuilding it from a full vector label with a printed-metal finish more than halved layout first's bad product scores (82% → 35%), but it didn't change the result. What's left is light and styling. Our can keeps its studio light and stays dry. The image model lights the can with the scene and adds condensation, on a product it has seen countless times. Full write-up, both runs and what would close the gap: [results/coca-cola/report.md](results/coca-cola/report.md).
 <!-- BENCH:END -->
 
 ## Quickstart
