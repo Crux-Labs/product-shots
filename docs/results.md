@@ -18,3 +18,7 @@ What each one got wrong:
 - **Plate first:** brand colours went dull under the room's light, and products came out small.
 
 Limits: model judges, not people or live ad spend; one round, 7-12 ads. Products held in hands were tested separately and are not solved: two of three hand ads got ship votes with a variant of this pipeline, the third none.
+
+## Coca-Cola benchmark (100 briefs)
+
+A larger, single-product run went the other way: the image model drawing the whole ad was ranked first on 98% of 99 briefs, layout first on 2%. Layout first kept every product pixel exact, but those pixels came from a 3D model built from one hand-held ad photo: a cut-off logo, a label covering 130° of the can, and the photo's light baked in. A famous product is also the image model's best case. Details: [results/coca-cola/report.md](../results/coca-cola/report.md).

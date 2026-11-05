@@ -76,6 +76,35 @@ def _gemini(model, guide, prompt):
     return out, {"aspect_ratio": ratio, "usage": {"input_tokens": um.prompt_token_count, "output_tokens": um.candidates_token_count}}, cost
 
 
+def fit(out: Image.Image, size: tuple[int, int]) -> Image.Image:
+    """Scale to cover, centre crop."""
+    W, H = size
+    s = max(W / out.width, H / out.height)
+    out = out.resize((round(out.width * s), round(out.height * s)), Image.LANCZOS)
+    l, t = (out.width - W) // 2, (out.height - H) // 2
+    return out.crop((l, t, l + W, t + H))
+
+
+def generate_full(prompt: str, references: list[Path], size: tuple[int, int], out_path: Path) -> dict:
+    """Benchmark baseline only: the image model draws the whole ad, product included, from reference photos.
+
+    This is what this project exists to avoid; it is here so the benchmark can measure it. Never use it to make a deliverable.
+    """
+    from openai import OpenAI
+    _, model = provider_and_model("openai")
+    t0 = time.time()
+    req = openai_size(*size)
+    images = [_png(Image.open(r).convert("RGB")) for r in references]
+    r = OpenAI().images.edit(model=model, image=images if len(images) > 1 else images[0], prompt=prompt, size=req, quality="high", n=1)
+    out = Image.open(io.BytesIO(base64.b64decode(r.data[0].b64_json))).convert("RGB")
+    fit(out, size).save(out_path)
+    u = r.usage.model_dump() if r.usage else {}
+    det = u.get("input_tokens_details") or {}
+    p = PRICES["openai"]
+    cost = (det.get("text_tokens", 0) * p[0] + det.get("image_tokens", 0) * p[1] + u.get("output_tokens", 0) * p[2]) / 1e6
+    return {"model": model, "size": req, "cost_usd": round(cost, 4), "seconds": round(time.time() - t0, 1)}
+
+
 def repaint(run_dir: Path, prompt: str, provider: str | None = None) -> dict:
     provider, model = provider_and_model(provider)
     guide = Image.open(run_dir / "guide.png").convert("RGB")
@@ -85,12 +114,8 @@ def repaint(run_dir: Path, prompt: str, provider: str | None = None) -> dict:
         out, extra, cost = _openai(model, guide, mask_alpha, prompt)
     else:
         out, extra, cost = _gemini(model, guide, prompt)
-    # Back to the page grid: scale to cover, centre crop, so the model's framing lines up with the guide.
-    W, H = guide.size
-    s = max(W / out.width, H / out.height)
-    out = out.resize((round(out.width * s), round(out.height * s)), Image.LANCZOS)
-    l, t = (out.width - W) // 2, (out.height - H) // 2
-    out.crop((l, t, l + W, t + H)).save(run_dir / "repaint.png")
+    # Back to the page grid, so the model's framing lines up with the guide.
+    fit(out, guide.size).save(run_dir / "repaint.png")
     meta = {"provider": provider, "model": model, "prompt": prompt, "cost_usd": round(cost, 4), "seconds": round(time.time() - t0, 1), **extra}
     (run_dir / "repaint.json").write_text(json.dumps(meta, indent=1, default=str))
     return meta

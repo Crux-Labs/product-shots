@@ -6,6 +6,7 @@
     shots layout | repaint | composite | verify <ad.json>    one step at a time
     shots texture rectify <photo> --corners x,y,x,y,x,y,x,y --size WxH --out face.png
     shots texture unwrap <photo> --box l,t,r,b --wrap 150 --out side.png
+    shots bench briefs|run|judge|report <product>    the three-way benchmark, see shots/bench.py
 """
 import argparse
 import importlib.util
@@ -116,6 +117,19 @@ def cmd_texture(args) -> int:
     return 0
 
 
+def cmd_bench(args) -> int:
+    from . import bench
+    if args.step == "briefs":
+        emit({"briefs": bench.make_briefs(args.product, args.n)})
+    elif args.step == "run":
+        emit(bench.run(args.product, args.workers, args.limit))
+    elif args.step == "judge":
+        emit(bench.judge(args.product, args.workers))
+    else:
+        emit(bench.report(args.product, Path(args.out or f"results/{args.product}")))
+    return 0
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="shots", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -142,6 +156,14 @@ def main(argv=None) -> int:
     tx.add_argument("--box", help="unwrap: body left,top,right,bottom")
     tx.add_argument("--wrap", type=float, default=150)
     tx.set_defaults(fn=cmd_texture)
+    bn = sub.add_parser("bench")
+    bn.add_argument("step", choices=["briefs", "run", "judge", "report"])
+    bn.add_argument("product")
+    bn.add_argument("--n", type=int, default=100)
+    bn.add_argument("--workers", type=int, default=4)
+    bn.add_argument("--limit", type=int, help="run: only the first N briefs")
+    bn.add_argument("--out", help="report: output folder (default results/<product>)")
+    bn.set_defaults(fn=cmd_bench)
     args = p.parse_args(argv)
     try:
         return args.fn(args)

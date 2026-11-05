@@ -1,0 +1,107 @@
+{
+ "briefs_judged": 99,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.86,
+   "realism": 6.96,
+   "brief_match": 6.84,
+   "ad_appeal": 6.43,
+   "overall": 6.52,
+   "ship_rate": 0.657,
+   "win_rate": 0.98,
+   "low_product_fidelity_rate": 0.273,
+   "mean_cost_usd": 0.079,
+   "mean_seconds": 34.8
+  },
+  "blender": {
+   "product_fidelity": 3.13,
+   "realism": 3.12,
+   "brief_match": 3.41,
+   "ad_appeal": 2.98,
+   "overall": 3.16,
+   "ship_rate": 0.0,
+   "win_rate": 0.0,
+   "low_product_fidelity_rate": 0.848,
+   "mean_cost_usd": 0.0,
+   "mean_seconds": 91.6
+  },
+  "layout_first": {
+   "product_fidelity": 3.21,
+   "realism": 4.52,
+   "brief_match": 6.58,
+   "ad_appeal": 3.8,
+   "overall": 4.53,
+   "ship_rate": 0.0,
+   "win_rate": 0.02,
+   "low_product_fidelity_rate": 0.818,
+   "mean_cost_usd": 0.0863,
+   "mean_seconds": 55.2
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 99,
+  "of": 99
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two red Coca-Cola cans standing upright side by side, seen at eye level, on a sunlit stadium pitch with real green grass, a blurred stadium crowd and floodlights behind, golden evening sky. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "No significant issues.",
+    "blender": "Completely ignores the environmental requirements of the brief.",
+    "layout_first": "The product label is poorly mapped onto the cans, causing distortion and cut-off text."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One red Coca-Cola can standing upright, seen from a high three-quarter view, on a wooden picnic table in a sunny park, blurred green trees behind, dappled summer light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "Condensation droplets are slightly uniform, but overall the image is highly accurate and realistic.",
+    "blender": "The label is poorly mapped onto the can with visible edges, and the background completely ignores the brief.",
+    "layout_first": "The product label is incorrectly mapped, showing a sharp white edge where the texture ends on the left."
+   }
+  },
+  {
+   "brief": "010",
+   "text": "Three red Coca-Cola cans standing upright in a row, seen at eye level, on a tidy office desk next to a laptop and notebook, bright modern office blurred behind. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_010.jpg",
+   "issues": {
+    "full_model": "The Coca-Cola logo is incorrectly rendered and cut off on all the cans.",
+    "blender": "The background scene is completely missing and the product logo is garbled.",
+    "layout_first": "The product logo is garbled, reading 'ca-Co' instead of the full brand name."
+   }
+  },
+  {
+   "brief": "019",
+   "text": "Three red Coca-Cola cans standing upright in a row, seen from a low hero angle, on a food-truck serving counter, colourful menu boards blurred behind, bright street light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_019.jpg",
+   "issues": {
+    "full_model": "The Coca-Cola logo is garbled into 'ca-Co' and the top area is too busy for a headline.",
+    "blender": "The background completely ignores the requested food truck setting and the logo is misspelled.",
+    "layout_first": "The Coca-Cola logo is incorrectly rendered as 'ca-Co' on all three cans."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "Two red Coca-Cola cans standing upright side by side, seen from a low hero angle, on a retro American diner counter with red vinyl stools and chrome trim blurred behind, warm interior light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The main logo wraps too far around the can, cutting off the first and last letters.",
+    "blender": "Completely ignores the diner setting and the logo is incorrectly wrapped.",
+    "layout_first": "The main logo is incorrectly scaled and wrapped, reading 'ca-Co'."
+   }
+  },
+  {
+   "brief": "004",
+   "text": "Three red Coca-Cola cans standing upright in a row, seen from a high three-quarter view, on a backyard barbecue table, grill smoke and string lights blurred behind, warm late-afternoon light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_004.jpg",
+   "issues": {
+    "full_model": "The Coca-Cola logo is missing its first letter on all three cans.",
+    "blender": "The image completely ignores the environmental brief and features broken product logos.",
+    "layout_first": "The Coca-Cola logo is severely truncated and incorrectly mapped on all three cans."
+   }
+  }
+ ]
+}

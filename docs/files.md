@@ -13,7 +13,7 @@
 | `faces` | box | `front`, `back`, `left`, `right`, `top`, `bottom`: texture paths relative to the product folder. Missing faces use `body_color`. |
 | `bevel_mm` | box | Edge rounding, default 0.8. |
 | `side` | cylinder | `texture`, `wrap_deg` (how much of the circumference the texture covers, centred on the front; default 360), optional `z_from_mm` / `z_to_mm` for a label band. |
-| `top` | cylinder | `texture` for the lid, front of the product at the bottom of the image. |
+| `top` | cylinder | `texture` for a printed lid (front of the product at the bottom of the image), or just `color` and `finish` for a bare lid such as a can end. `from_mm` gives everything above that height (a can's neck and rim) the lid's material. |
 | `profile_mm` | cylinder | Optional `[[radius, z], ...]` from the base up, for bottles and jars. Replaces `dimensions_mm`. |
 
 Orientation: the model's base sits on the floor, its front faces the camera at `rotation_deg` `[0, 0, 0]`.

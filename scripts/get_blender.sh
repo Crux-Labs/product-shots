@@ -16,8 +16,11 @@ esac
 
 got=""
 for m in "${MIRRORS[@]}"; do
-  echo "Downloading ${m}/Blender${SERIES}/${FILE}"
-  if curl -fL --progress-bar -A "product-shots-setup" -o "tools/${FILE}" "${m}/Blender${SERIES}/${FILE}"; then got=1; break; fi
+  url="${m}/Blender${SERIES}/${FILE}"
+  # Check first, quietly, so a refused mirror doesn't print a curl error; then download with a progress bar.
+  if ! curl -sfIL -A "product-shots-setup" "$url" >/dev/null; then echo "Not available at ${m}, trying the next mirror"; continue; fi
+  echo "Downloading ${url}"
+  if curl -fL --progress-bar -A "product-shots-setup" -o "tools/${FILE}" "$url"; then got=1; break; fi
 done
 [ -n "$got" ] || { echo "Could not download ${FILE}. Install Blender 4.2+ from blender.org and set BLENDER_PATH in .env." >&2; exit 1; }
 rm -rf tools/blender && mkdir -p tools/blender

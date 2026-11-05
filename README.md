@@ -1,12 +1,77 @@
 # product-shots
 
-Product ads where **Blender owns the product and an image model paints only the room around it.**
+Make product ads with AI **without letting AI touch your product.**
 
-Image models are good at rooms, light and mood, and bad at your product: they redraw logos, misspell labels and change sizes. product-shots never lets them touch it. Your product is a 3D model wrapped in your own photos. Blender places it, the image model repaints everything else as a real photo, and the exact product pixels go back on top. Every run checks that not one product pixel changed.
+Blender places your real product, an image model paints the room around it, and the exact product pixels go back on top. Every image is checked: not one product pixel may change.
 
 ![Blender layout on the left, finished ad on the right](docs/img/demo_before_after.jpg)
 
 *Left: the Blender layout. Right: the finished image. The tin and the box are the same pixels in both.*
+
+## Why
+
+There are two obvious ways to make a product ad with software, and each fails in its own way:
+
+| | **Image model draws the whole ad** | **Blender renders the whole ad** |
+|---|---|---|
+| How | Give the model a product photo and a brief | Build the product and the scene in 3D |
+| Great at | Real-looking rooms, light, mood, people | Exact product: right label, size and angle |
+| Breaks on | **The product.** It redraws it: garbled logos, outdated logos, invented products, wrong sizes | **Everything else.** Rooms, props and hands look CG, and every scene is built by hand |
+
+**product-shots splits the job.** Each tool does only the part it's good at:
+
+| Step | Who does it | Why |
+|---|---|---|
+| Product, camera, framing, product light | Blender | It can't get the product wrong: it only uses your photos |
+| Room, surface, background, mood | Image model | It makes believable photos |
+| Final product pixels | Copied from Blender | So the model's version of your product is thrown away |
+
+We call this **layout first**: the layout comes from Blender, the image model fills in around it.
+
+## How it works
+
+```
+ your product photos ─► 3D model of your product (textures are your photos' pixels)
+                                   │
+ your brief ─► ad.json ─► 1. Blender layout ──► guide.png ─► 3. image model repaints the room ─┐
+                                   ├──────────► layer.png  (product + its shadow) ─────────────┼─► 4. put product back ─► 5. verify ─► final.png
+                                   └──────────► 2. mask.png (product outline: "do not change")─┘
+```
+
+1. **Blender layout.** Your product model, the camera, framing and product lighting, set up to sell the product. The room in this render is only a rough guide. Blender writes three images: the whole scene, the product with the shadows it casts, and a product mask.
+2. **Mask.** The product outline, grown by about 6 px, is marked "do not change".
+3. **Image model repaint.** One edit call re-shoots everything outside the mask as a real photo: wood grain, tiles, window light, shallow focus, calm space for a headline. The prompt says to keep the camera, horizon and every object's size and position, and to add no product, logo or text. About 30-40 s and $0.05-0.12 per image.
+4. **Exact product put back.** The Blender product and its shadow go back on top. The blend happens in linear light, so shadows keep their real darkness.
+5. **Verify.** The saved image is read back and every product pixel is compared with the Blender render. One changed pixel fails the run.
+
+Details: [docs/how-it-works.md](docs/how-it-works.md).
+
+## What we learned
+
+We tested this against the two obvious approaches, and against the reverse order, on live ads from real brands, judged blind. Full write-up: [docs/results.md](docs/results.md).
+
+- **Image model alone:** the most photographic results, and the riskiest. On lesser-known products it drew a misspelt brand logo, an outdated logo on a product that doesn't exist, and a memory card at twice its real size. On a world-famous product with a clean reference (a Coca-Cola can) it copies the label very well. You never know which you'll get, so every image needs a person to check the product.
+- **Blender alone:** the product is always right, and simple graphic scenes work. Rooms, props and hands look like a render, and building each scene is slow.
+- **Plate first** (the model paints an empty room, then Blender lights the product to match it): came last. Lighting the product from the room dulled brand colours, and the room's scale shrank the products.
+- **Layout first** (this repo): won the blind test on ads from three brands whose 3D models came from clean product photos. The product is guaranteed, and the room looks real. It lost the Coca-Cola benchmark below, where the 3D model came from one hand-held ad photo.
+- **Its weak spots:** the 3D model is the ceiling (a cut-off logo, a label that only covers the front, or light baked into the photo all show up, exactly), the image model sometimes redraws the product slightly bigger behind ours (a faint "ghost" edge), and products keep their Blender light, so a hard-sun room can look mismatched.
+
+### Coca-Cola benchmark
+
+<!-- BENCH:START -->
+100 generated briefs for the classic Coca-Cola can, three arms, judged blind by Gemini 3.1 Pro (99 briefs kept):
+
+| | Image model draws the ad | Blender only | Layout first |
+|---|---|---|---|
+| Ranked first | **98 %** | 0 % | 2 % |
+| Would ship | **66 %** | 0 % | 0 % |
+| Product score (1-10) | **5.9** | 3.1 | 3.2 |
+| Realism (1-10) | **7.0** | 3.1 | 4.5 |
+| Product pixels exact | not checked | yes | **99 / 99** |
+| Cost per image | $0.08 | $0 | $0.09 |
+
+**The image model won this one.** Layout first kept every product pixel exact, but those were the pixels of a weak 3D model. It was built from one hand-held ad photo that shows only part of the logo ("ca-Col") and 130° of the can, with the photo's water drops and highlights baked in. The image model, given the same photo, often filled in the famous logo from memory. Lesson: layout first is only as good as the product model, and a famous product is the image model's best case. Full write-up and what a fair rerun needs: [results/coca-cola/report.md](results/coca-cola/report.md).
+<!-- BENCH:END -->
 
 ## Quickstart
 
@@ -20,26 +85,22 @@ git clone https://github.com/Crux-Labs/product-shots
 cd product-shots && claude
 ```
 
-Then, inside Claude Code:
+The first time, Claude Code asks whether you trust this folder. Say yes: that turns on the repo's pre-approved commands, so you aren't asked to approve every step. Then type:
 
 | Command | What happens |
 |---|---|
-| `/setup` | Installs everything, asks you to paste one API key into `.env`, and makes a demo ad so you can see it work (about 3 minutes, about $0.09). |
-| `/new-product` | You drop photos of your product in a folder. Claude builds the 3D model and shows it next to your photos to check. |
+| `/setup` | Installs everything, asks you to paste one API key into `.env`, and makes a demo ad so you see it work (about 3 minutes, about $0.09). |
+| `/new-product` | You put 2-5 photos of your product in a folder. Claude builds the 3D model from them and shows it next to your photos to check. |
 | `/make-ad` | Describe the ad in plain words. You get the finished image, the steps, and what it cost. |
 
-## How it works
+## What works today
 
-1. **Blender layout.** Your product model, camera, framing and product lighting. The room is a rough guide. Three renders come out: the whole scene, the product with the shadows it casts, and a product mask.
-2. **Mask.** The product outline, grown by about 6 px, is marked "do not change".
-3. **Image model repaint.** One edit call re-shoots everything outside the mask as a real photo. The prompt keeps the camera, horizon and every object's size and position, and forbids adding any product, logo or text. About 30-40 s and $0.05-0.12 per image.
-4. **Exact product put back.** The Blender product and its shadow go back on top in linear light. `shots verify` reads the saved image and fails the run if any product pixel differs from Blender.
-
-More in [docs/how-it-works.md](docs/how-it-works.md). Why this approach, and what it beat in a blind test: [docs/results.md](docs/results.md).
+- **Products:** boxes, cartons, tins, cans, jars, bottles, cards and other simple shapes with printed labels. Templates: `box` and `cylinder` (with a profile for bottles, jars and cans). See [docs/templates.md](docs/templates.md).
+- **Not yet:** pouches, tubes, odd shapes (each needs a template), products held in hands, and text overlay without the optional Playwright install.
 
 ## Without Claude Code
 
-Everything Claude does goes through the `shots` command, so you can run it yourself:
+Everything Claude does goes through the `shots` command:
 
 ```bash
 ./scripts/setup.sh
@@ -49,13 +110,7 @@ Everything Claude does goes through the `shots` command, so you can run it yours
 .venv/bin/shots ad examples/demo-tin/ads/counter/ad.json
 ```
 
-`shots --help` lists every command. Products are folders with a `product.json` and a `kit/` of photos; ads are an `ad.json`. See [docs/files.md](docs/files.md).
-
-## What works and what doesn't yet
-
-- **Good:** boxes, cartons, tins, cans, jars, cards and other simple shapes with printed labels.
-- **Templates so far:** `box` and `cylinder` (a profile turns it into a bottle or jar). Pouches, tubes and odd shapes need a new template. See [docs/templates.md](docs/templates.md).
-- **Known issues:** the image model sometimes redraws the product slightly bigger behind ours, leaving a faint edge ("ghost"). Products keep their Blender lighting, so a strongly lit room can look mismatched. Products held in hands are not supported yet.
+`shots --help` lists every command, including `shots bench` for running the three-way benchmark on your own product. File formats: [docs/files.md](docs/files.md).
 
 ## License
 

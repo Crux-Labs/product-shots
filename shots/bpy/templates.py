@@ -4,7 +4,7 @@ Every template textures the model with the product's own photos, so labels and l
 
     box       cartons, boxes, cards, flat devices: dimensions_mm {width, depth, height}, faces {front, back, left, right, top, bottom}
     cylinder  tins, cans, jars, bottles: dimensions_mm {diameter, height} or profile_mm [[radius, z], ...] from the base up,
-              side {texture, wrap_deg, z_from_mm, z_to_mm}, top {texture}
+              side {texture, wrap_deg, z_from_mm, z_to_mm}, top {texture or color, finish, from_mm}
 """
 import math
 from pathlib import Path
@@ -111,9 +111,14 @@ def cylinder(spec, name, segments=128):
     if side.get("texture"):
         side_i = len(mats)
         mats.append(material(f"{name}_side", color, finish, side["texture"], clip=wrap < 360))
-    if spec.get("top", {}).get("texture"):
+    top = spec.get("top", {})
+    if top.get("texture"):
         top_i = len(mats)
-        mats.append(material(f"{name}_top", color, finish, spec["top"]["texture"], clip=True))
+        mats.append(material(f"{name}_top", top.get("color", color), top.get("finish", finish), top["texture"], clip=True))
+    elif top.get("color"):
+        # A bare lid (a can's aluminium end) is a plain material, not a label.
+        top_i = len(mats)
+        mats.append(material(f"{name}_top", top["color"], top.get("finish", finish)))
     # phi is the angle from the front (-Y) towards +X, so u runs left to right as seen from the front and u = 0.5 is the front.
     phis = [-180 + 360 * k / segments for k in range(segments + 1)]
     verts, faces, uvs, mat_index = [], [], [], []
@@ -125,12 +130,14 @@ def cylinder(spec, name, segments=128):
     for i in range(len(profile) - 1):
         (_, z0), (_, z1) = profile[i], profile[i + 1]
         labelled = side_i and z0 >= z_from - 1e-6 and z1 <= z_to + 1e-6
+        # top.from_mm: everything from that height up (a can's neck and rim) takes the lid's material.
+        lid_band = top_i and spec.get("top", {}).get("from_mm") is not None and z0 >= spec["top"]["from_mm"] * MM - 1e-6
         for k in range(segments):
             faces.append((ring(i, k), ring(i, k + 1), ring(i + 1, k + 1), ring(i + 1, k)))
             u0, u1 = 0.5 + phis[k] / wrap, 0.5 + phis[k + 1] / wrap
             v0, v1 = ((z0 - z_from) / (z_to - z_from), (z1 - z_from) / (z_to - z_from)) if labelled else (0, 1)
             uvs.append([(u0, v0), (u1, v0), (u1, v1), (u0, v1)])
-            mat_index.append(side_i if labelled else 0)
+            mat_index.append(side_i if labelled else top_i if lid_band else 0)
     for cap, top in ((0, False), (len(profile) - 1, True)):
         r, z = profile[cap]
         if r <= 0:
