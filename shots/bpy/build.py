@@ -124,9 +124,17 @@ def lights(spec, target):
         area_light("fill", target, l.get("key_azimuth_deg", -55) + 110, 20, 1.4, 1.2, 40 * fill, (232, 240, 255))
     world = bpy.data.worlds.new("world")
     world.use_nodes = True
-    bg = world.node_tree.nodes["Background"]
+    nodes, links = world.node_tree.nodes, world.node_tree.links
+    bg = nodes["Background"]
     bg.inputs["Color"].default_value = templates.linear(l.get("ambient_color", (210, 215, 225)))
-    bg.inputs["Strength"].default_value = l.get("ambient", 0.25)
+    # Brighter overhead than at the horizon, like a room or studio, so metal and gloss have something to reflect.
+    coord, xyz, ramp = nodes.new("ShaderNodeTexCoord"), nodes.new("ShaderNodeSeparateXYZ"), nodes.new("ShaderNodeMapRange")
+    ramp.inputs["From Min"].default_value, ramp.inputs["From Max"].default_value = -0.1, 0.9
+    ambient = l.get("ambient", 0.25)
+    ramp.inputs["To Min"].default_value, ramp.inputs["To Max"].default_value = ambient * 0.4, ambient * 1.8
+    links.new(coord.outputs["Generated"], xyz.inputs["Vector"])
+    links.new(xyz.outputs["Z"], ramp.inputs["Value"])
+    links.new(ramp.outputs["Result"], bg.inputs["Strength"])
     bpy.context.scene.world = world
 
 

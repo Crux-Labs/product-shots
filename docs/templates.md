@@ -12,7 +12,7 @@ Good for cartons, boxes, cards, phones, flat devices.
 
 A body of revolution. With `dimensions_mm` it's a straight cylinder; with `profile_mm` you describe the silhouette as `[radius, z]` points from the base up, which gives bottles, jars and tubs.
 
-The side texture is wrapped round the body: `u = 0.5` is the front, `wrap_deg` sets how much of the circumference one image covers. A label cut from one front photo covers about 150°; the rest shows `body_color`.
+The side texture is wrapped round the body: `u = 0.5` is the front, `wrap_deg` sets how much of the circumference one image covers. A label cut from one front photo covers about 150°; the rest shows `body_color`. The flat label artwork (the brand's print file) is better still: set `wrap_deg` to 360, and the model has the whole logo, no seam and no light baked in from a photo. `turn_deg` then picks the side that faces the camera.
 
 Good for tins, cans, jars, bottles, tubs.
 

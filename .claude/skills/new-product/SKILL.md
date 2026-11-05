@@ -7,7 +7,7 @@ description: Builds a 3D model of the user's physical product from their photos,
 
 Goal: `products/<name>/product.json` plus textures cut from the user's photos, and a check sheet the user agrees looks like their product.
 
-The label, logo and text on the model must be **pixels from the user's photos**, only cropped, straightened or unwrapped. Never draw, generate or "clean up" a label with an image model or by painting. If a side has no photo, use the product's plain body colour there.
+The label, logo and text on the model must be **pixels from the brand's own label artwork or the user's photos**, only cropped, straightened or unwrapped. Never draw, generate or "clean up" a label with an image model or by painting. If a side has no photo, use the product's plain body colour there.
 
 ## 1. Collect
 
@@ -15,6 +15,7 @@ Ask for:
 - a short name (lowercase, dashes: `oat-milk-carton`)
 - what it is in a few words, which becomes `display_name` (for example "white Oatly oat milk carton"); the image model reads this
 - real size in millimetres (from the pack, or a ruler; ask, don't guess)
+- the flat label artwork, if they have it (the print file a printer would get: PDF, PNG or SVG). It beats photos: the whole label, sharp text, no reflections. For round products, ask for it first.
 - photos: front straight on, plus side and top if they have them. Plain background, even light, the product filling most of the frame. Phone photos are fine.
 
 Create `products/<name>/kit/` and ask them to put the photos there (or copy files they point you to). Look at every photo.
@@ -34,7 +35,8 @@ Work in `products/<name>/kit/`, keep the original photos, and write textures bes
 - **Box faces:** find each face's four corners in the photo (open the image and measure; zoom on corners). Then:
   `.venv/bin/shots texture rectify kit/front_photo.jpg --corners x1,y1,x2,y2,x3,y3,x4,y4 --size WxH --out kit/front.png`
   Corners go top-left, top-right, bottom-right, bottom-left. Pick W:H in the face's real proportions (a 70 x 120 mm face is 700x1200).
-- **Round labels:** find the body's left, top, right and bottom edges in a straight-on front photo, then:
+- **Round labels from artwork:** export the flat label to `kit/label.png` (its width is the circumference) and set `"wrap_deg": 360`. Drinks cans: `"finish": "printed_metal"`, a bare `top` with `"tab": true` and a bare `bottom`.
+- **Round labels from photos:** find the body's left, top, right and bottom edges in a straight-on front photo, then:
   `.venv/bin/shots texture unwrap kit/front_photo.jpg --box l,t,r,b --wrap 150 --out kit/side.png`
   and set `"wrap_deg": 150` in `product.json`. Leave `wrap_deg` at 360 only for a texture that really covers the full circumference.
 - **Tops and lids:** rectify a top photo to a square; for round lids, crop to the circle.
@@ -57,7 +59,7 @@ Follow `docs/files.md`. Example:
 }
 ```
 
-`body_color` is the plain colour of untextured areas (sample it from a photo). `finish` is `matte`, `paper`, `glossy`, `metal` or `plastic`.
+`body_color` is the plain colour of untextured areas (sample it from a photo). `finish` is `matte`, `paper`, `glossy`, `metal`, `plastic`, `aluminium` or `printed_metal`.
 
 ## 5. Check
 

@@ -9,11 +9,12 @@
 | `template` | all | `box` or `cylinder`. See [templates.md](templates.md). |
 | `dimensions_mm` | all | Real size. box: `width`, `depth`, `height`. cylinder: `diameter`, `height`. |
 | `body_color` | all | sRGB `[r, g, b]` for any area without a texture. |
-| `finish` | all | `matte`, `paper`, `glossy`, `metal` or `plastic`. |
+| `finish` | all | `matte`, `paper`, `glossy`, `metal`, `plastic`, `aluminium` (bare can metal) or `printed_metal` (ink on metal under varnish, as on drinks cans: coloured ink lets the metal shine through, white and black ink don't). |
 | `faces` | box | `front`, `back`, `left`, `right`, `top`, `bottom`: texture paths relative to the product folder. Missing faces use `body_color`. |
 | `bevel_mm` | box | Edge rounding, default 0.8. |
-| `side` | cylinder | `texture`, `wrap_deg` (how much of the circumference the texture covers, centred on the front; default 360), optional `z_from_mm` / `z_to_mm` for a label band. |
-| `top` | cylinder | `texture` for a printed lid (front of the product at the bottom of the image), or just `color` and `finish` for a bare lid such as a can end. `from_mm` gives everything above that height (a can's neck and rim) the lid's material. |
+| `side` | cylinder | `texture`, `wrap_deg` (how much of the circumference the texture covers, centred on the front; default 360), optional `z_from_mm` / `z_to_mm` for a label band, optional `turn_deg` to choose which part of a full label faces the camera (negative brings the label's left side round to the front). |
+| `top` | cylinder | `texture` for a printed lid (front of the product at the bottom of the image), or just `color` and `finish` for a bare lid such as a can end. `from_mm` gives everything above that height (a can's neck and rim) the lid's material; with both `texture` and `color`, the image goes on the lid and the colour on the neck and rim. `tab: true` adds a drinks-can pull tab and rivet. |
+| `bottom` | cylinder | `color`, `finish` and `to_mm`: everything below that height (a can's unprinted base) takes this material. |
 | `profile_mm` | cylinder | Optional `[[radius, z], ...]` from the base up, for bottles and jars. Replaces `dimensions_mm`. |
 
 Orientation: the model's base sits on the floor, its front faces the camera at `rotation_deg` `[0, 0, 0]`.

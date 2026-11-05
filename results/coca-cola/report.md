@@ -52,6 +52,17 @@ None of this is a pixel-check failure. The guarantee worked: the product is exac
 - **Light-neutral texture:** photos without water drops or strong highlights, so Blender's light is the only light.
 - **Match light to the room:** relight the product layer to the repainted room before compositing. This is the open weak spot from the earlier tests.
 
+## Update: the can model is rebuilt
+
+After this run, the can was rebuilt the way the list above describes:
+- **Label:** a full 360° flat label drawn from the official Coca-Cola wordmark (vector), sized and placed by fitting it to the ad photo. The text was measured from the same photo. The back panel is approximated.
+- **Material:** printed metal. Red ink lets the aluminium shine through, white ink doesn't, and a clear varnish sits on top.
+- **Shape:** a bare aluminium lid with a pull tab and rivet, and a bare base.
+- **Light:** a brighter-overhead environment, so the metal has something to reflect.
+- **Angle:** the can is turned 25° so "Coca-Co" faces the camera.
+
+The benchmark above still shows the old model. A rerun with the new one hasn't been done yet.
+
 ## Reproduce
 
 ```bash
