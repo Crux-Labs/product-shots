@@ -26,3 +26,13 @@ def test_panorama_puts_the_photo_in_front_and_its_mirror_behind(tmp_path):
     # u = 0.75 looks where the camera looks: the photo runs left (red) to right (blue) around it; behind the camera it is mirrored.
     assert mid[220][0] > 200 and mid[380][2] > 200
     assert mid[20][2] > 200 and mid[180][0] > 200
+
+
+def test_neutral_keeps_the_room_direction_but_drops_its_colour(tmp_path):
+    warm = relight.light_spec(EST, {})
+    white = relight.light_spec(EST, {}, neutral=True)
+    assert white["key_color"] == relight.NEUTRAL_KEY and white["fill_color"] == relight.NEUTRAL_FILL
+    assert {k: v for k, v in white.items() if "color" not in k} == {k: v for k, v in warm.items() if "color" not in k}
+    Image.fromarray(np.full((50, 100, 3), (255, 120, 0), np.uint8)).save(tmp_path / "room.png")
+    pano = np.asarray(Image.open(relight.panorama(tmp_path / "room.png", tmp_path / "pano.png", width=200, grey=True)))
+    assert np.ptp(pano[50], axis=-1).max() == 0, "the grey panorama has no colour"

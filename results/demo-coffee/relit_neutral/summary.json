@@ -1,0 +1,101 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 5.67,
+   "realism": 6.8,
+   "brief_match": 6.3,
+   "ad_appeal": 6.33,
+   "overall": 6.28,
+   "ship_rate": 0.567,
+   "win_rate": 0.833,
+   "low_product_fidelity_rate": 0.267,
+   "mean_cost_usd": 0.0842,
+   "mean_seconds": 45.8
+  },
+  "layout_first": {
+   "product_fidelity": 3.57,
+   "realism": 4.97,
+   "brief_match": 6.53,
+   "ad_appeal": 4.33,
+   "overall": 4.85,
+   "ship_rate": 0.0,
+   "win_rate": 0.133,
+   "low_product_fidelity_rate": 0.667,
+   "mean_cost_usd": 0.0846,
+   "mean_seconds": 77.8
+  },
+  "relit_neutral": {
+   "product_fidelity": 3.47,
+   "realism": 4.47,
+   "brief_match": 6.53,
+   "ad_appeal": 3.93,
+   "overall": 4.6,
+   "ship_rate": 0.033,
+   "win_rate": 0.033,
+   "low_product_fidelity_rate": 0.733,
+   "mean_cost_usd": 0.0946,
+   "mean_seconds": 159.3
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "relit_neutral_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "001",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a high three-quarter view, on a caf\u00e9 counter with an espresso machine and cups blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The perspective of the lid's ellipse is slightly mismatched with the camera angle.",
+    "layout_first": "The label logo has an incorrect glowing white background and the lid text is garbled.",
+    "relit_neutral": "The label logo background is incorrectly white and the lid text contains gibberish."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "Two Harbor & Pine coffee tins side by side, standing upright, seen from a low hero angle, on a breakfast table with a plate of croissants and a jug of milk, sunny dining room blurred behind. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "The camera angle is slightly higher than a true low hero angle.",
+    "layout_first": "The brand name is misspelled as 'ARBOR' on the left tin.",
+    "relit_neutral": "The brand name is missing its first letter on the left tin."
+   }
+  },
+  {
+   "brief": "005",
+   "text": "One Harbor & Pine coffee tin standing upright, seen from a low hero angle, on a white marble kitchen island, bright minimal kitchen behind, soft daylight. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_005.jpg",
+   "issues": {
+    "full_model": "The label layout is severely compressed horizontally, bringing the side panels onto the front face.",
+    "layout_first": "The logo is disproportionately large compared to the text, altering the label's intended proportions.",
+    "relit_neutral": "A harsh, artificial-looking reflection completely obscures the brand name on the tin."
+   }
+  },
+  {
+   "brief": "009",
+   "text": "Three Harbor & Pine coffee tins in a row, standing upright, seen from a low hero angle, on a seamless warm beige studio backdrop with a soft floor shadow, clean commercial light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_009.jpg",
+   "issues": {
+    "full_model": "The text on the lids is incorrect and the camera angle is too high, violating the brief.",
+    "layout_first": "The image has a noticeable 3D rendered look with slightly artificial lighting.",
+    "relit_neutral": "The tins appear as obvious 3D renders with harsh, unnatural reflections."
+   }
+  },
+  {
+   "brief": "000",
+   "text": "Two Harbor & Pine coffee tins side by side, standing upright, seen at eye level, on a warm oak kitchen counter next to a pour-over coffee maker and a mug, pale tiles behind, soft morning window light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The elevated camera angle violates the eye-level brief and exposes garbled text on the lids.",
+    "layout_first": "The metallic rims look slightly artificial and the right tin's rotation cuts off the brand name.",
+    "relit_neutral": "The right tin is rotated such that the brand name is partially obscured by the curve of the cylinder."
+   }
+  }
+ ]
+}

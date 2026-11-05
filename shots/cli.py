@@ -120,8 +120,8 @@ def cmd_texture(args) -> int:
 
 def cmd_relight(args) -> int:
     from . import relight
-    result = relight.relight(Path(args.ad))
-    emit({"plate": str(Path(args.ad).resolve().parent / "out" / "relit" / "plate.png"), "light": result["light"], "verify": result["verify"]})
+    result = relight.relight(Path(args.ad), neutral=args.neutral)
+    emit({"plate": str(Path(args.ad).resolve().parent / "out" / ("relit_neutral" if args.neutral else "relit") / "plate.png"), "light": result["light"], "verify": result["verify"]})
     return 0
 
 
@@ -132,7 +132,7 @@ def cmd_bench(args) -> int:
     elif args.step == "run":
         emit(bench.run(args.product, args.workers, args.limit))
     elif args.step == "relight":
-        emit(bench.relight_all(args.product, args.workers, args.limit))
+        emit(bench.relight_all(args.product, args.workers, args.limit, args.neutral))
     elif args.step == "judge":
         emit(bench.judge(args.product, args.workers, arms=args.arms, tag=args.tag))
     elif args.step == "accuracy":
@@ -161,6 +161,7 @@ def main(argv=None) -> int:
         sp.set_defaults(fn=fn)
     rl = sub.add_parser("relight")
     rl.add_argument("ad")
+    rl.add_argument("--neutral", action="store_true", help="white light and a grey room to reflect: keep printed colours true")
     rl.set_defaults(fn=cmd_relight)
     tx = sub.add_parser("texture")
     tx.add_argument("kind", choices=["rectify", "unwrap"])
@@ -179,6 +180,7 @@ def main(argv=None) -> int:
     bn.add_argument("--limit", type=int, help="run: only the first N briefs")
     bn.add_argument("--out", help="report: output folder (default results/<product>)")
     bn.add_argument("--arms", type=lambda v: v.split(","), help="judge/report: three arms to compare, e.g. full_model,layout_first,relit")
+    bn.add_argument("--neutral", action="store_true", help="relight: white light, grey reflections (arm relit_neutral)")
     bn.add_argument("--tag", help="judge/report: name for this comparison, so its judgements sit beside the main ones")
     bn.set_defaults(fn=cmd_bench)
     args = p.parse_args(argv)

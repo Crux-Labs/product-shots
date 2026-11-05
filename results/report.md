@@ -72,7 +72,7 @@ The first run of the card and phone used a matte finish whose sheen turned the p
 
 The card's product complaints mostly went away. It still loses the ranking on light: the image model's card sits in the scene's light, ours in Blender's.
 
-## Relighting test: it made things worse
+## Relighting tests: both made things worse
 
 The obvious fix for "the product keeps Blender's light" was to light it like the room. `shots relight` does that after the repaint: Gemini reads the repainted room's light (direction, height, colour, hardness, how open the shadows are), the repaint becomes a blurred panorama the product reflects, and Blender renders the product again under that light. A back-lit room keeps its light on the same side but brought round to the front, so the label still reads. The repaint is reused, so the product pixels still come only from the 3D model, and all 60 relit ads passed the pixel check.
 
@@ -85,13 +85,25 @@ Judged three ways (image model, layout first, relit) on the card and the coffee 
 | Realism (1-10) | 5.2 / 5.1 | 5.1 / 4.7 |
 | Pixel check | 30 / 30 | 30 / 30 |
 
-Relit lost on both. The judge's notes say why: "severe colour tinting makes the magnetic stripe, signature box and hologram appear gold", "the card appears black instead of navy", "impossible bright reflections". Warm room light does turn a white strip gold, physically; but in an ad it reads as the wrong product. The image model keeps the product's printed colours true even in a candle-lit restaurant or a taxi at night, which is what product photographers do: neutral light on the product, the room shown through rim light, shadow and reflection. So matching the room's light colour isn't what's missing. `shots relight` stays in the repo as an experiment, off by default. Results: `results/demo-card/relit/` and `results/demo-coffee/relit/`.
+Relit lost on both. The judge's notes say why: "severe colour tinting makes the magnetic stripe, signature box and hologram appear gold", "the card appears black instead of navy", "impossible bright reflections". Warm room light does turn a white strip gold, physically; but in an ad it reads as the wrong product. The image model keeps the product's printed colours true even in a candle-lit restaurant or a taxi at night, which is what product photographers do: neutral light on the product, the room shown through rim light, shadow and reflection. So we tried again in white light: `shots relight --neutral` keeps the room's light direction, height, softness and strength, but the light is white and the room it reflects is grey, so printed colours stay true.
+
+| | Card: layout first / neutral relit | Coffee tin: layout first / neutral relit |
+|---|---|---|
+| Ranked first | 13% / **3%** | 13% / **3%** |
+| Product score (1-10) | 5.4 / 5.0 | 3.6 / 3.5 |
+| Realism (1-10) | 5.4 / 5.3 | 5.0 / 4.5 |
+| Pixel check | 30 / 30 | 30 / 30 |
+
+That lost too. The colour complaints went away, and new ones came in: "harsh, artificial-looking reflection obscures the brand name", "obvious 3D renders with harsh, unnatural reflections". The room's reflection on the metal tin read as CG, and the stronger directional light made edges glint.
+
+**What this tells us:** the plain, soft studio light Blender already uses beat both attempts to match the room. Matching the room's light is not what layout first is missing. The gap to the image model is in how the product reads as photographed: soft, believable material response, contact with the surface, framing. Note also how much the judge's numbers move between comparisons: the same layout-first ads scored 3.6 to 4.1 on coffee product depending on what they were judged against, so differences under about half a point are noise.
+
+`shots relight` (and `--neutral`) stay in the repo as experiments, off by default. Results: `results/demo-card/relit/`, `results/demo-coffee/relit/` and the `relit_neutral/` folders beside them.
 
 ## What would close the gap
 
-- **Keep the product's colours true, take only the room's direction and softness:** a neutral-colour relight is the next, cheaper test, now that we know colour tints hurt.
 - **Check the material before making ads:** render the product under a few bench lights and compare its printed colours with the reference automatically. The card's grey would have been caught before any money was spent.
-- **Integration rather than light:** contact shadows and reflections on the surface the product stands on, hero framing that fills the frame, and styling layers in 3D (condensation, reflections).
+- **Integration rather than light** (relighting is ruled out above): contact shadows and reflections on the surface the product stands on, hero framing that fills the frame, and styling layers in 3D (condensation, reflections).
 
 ## Reproduce
 

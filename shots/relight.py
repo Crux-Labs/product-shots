@@ -5,6 +5,9 @@ The repaint never decides a product pixel, so the product can be rendered again 
     2. the repaint is wrapped round the scene as a blurred panorama, so the product reflects the room it sits in;
     3. Blender renders the product layer again with that light and world, same camera, same mask;
     4. the usual composite and pixel check run against the new layer, in out/relit/.
+
+neutral keeps the room's light direction, height, softness and strength but makes it white, and the panorama grey: the product
+sits in the room's light without taking on its colour, the way a product photographer keeps printed colours true.
 """
 import json
 import shutil
@@ -57,7 +60,10 @@ def _rgb(c) -> list[int]:
     return [int(min(255, max(0, v))) for v in c]
 
 
-def light_spec(est: dict, base: dict) -> dict:
+NEUTRAL_KEY, NEUTRAL_FILL = [255, 250, 244], [236, 240, 248]
+
+
+def light_spec(est: dict, base: dict, neutral: bool = False) -> dict:
     """The estimate in ad.json light terms, around the bench's calibrated defaults (key_power 1, fill 0.35).
 
     Like a product photographer, keep the room's light on the side it comes from but never let it fall behind the product: a
@@ -68,15 +74,17 @@ def light_spec(est: dict, base: dict) -> dict:
     hard, amb = clamp(est["key_hardness"], 0, 1), clamp(est["ambient_strength"], 0, 1)
     return {**base, "key_azimuth_deg": clamp(est["key_azimuth_deg"], -75, 75), "key_elevation_deg": clamp(est["key_elevation_deg"], 5, 85),
             "key_color": _rgb(est["key_color"]), "key_size_m": round(1.4 - 1.2 * hard, 2), "key_power": clamp(est["key_strength"], 0.6, 1.6),
-            "fill": round(0.22 + 0.25 * amb, 3), "fill_color": _rgb(est["ambient_color"])}
+            "fill": round(0.22 + 0.25 * amb, 3), "fill_color": _rgb(est["ambient_color"])} | (
+        {"key_color": NEUTRAL_KEY, "fill_color": NEUTRAL_FILL} if neutral else {})
 
 
-def panorama(image: Path, out: Path, width: int = 2048, blur: float = 18) -> Path:
+def panorama(image: Path, out: Path, width: int = 2048, blur: float = 18, grey: bool = False) -> Path:
     """An equirectangular world from one photo: the photo spans the half in front of the camera, its mirror the half behind,
     its top and bottom rows stretch up to the zenith and down to the floor, and the whole thing is blurred so reflections read
     as the room's colours and light, not as a second copy of it."""
     half = width // 2
-    photo = np.asarray(Image.open(image).convert("RGB").resize((half, half // 2), Image.LANCZOS))
+    photo = Image.open(image).convert("L" if grey else "RGB").convert("RGB")
+    photo = np.asarray(photo.resize((half, half // 2), Image.LANCZOS))
     front = photo  # Blender's equirect puts +Y (where the camera looks) at u = 0.75 and -Y (behind the camera) at u = 0.25.
     band = np.concatenate([front[:, ::-1], front], axis=1)
     rows = width // 2
@@ -88,15 +96,16 @@ def panorama(image: Path, out: Path, width: int = 2048, blur: float = 18) -> Pat
     return out
 
 
-def relight(ad_path: Path, light: dict | None = None) -> dict:
-    """Needs a finished run in out/ (repaint.png and mask.png). Writes out/relit/ with layer, plate and the pixel check."""
+def relight(ad_path: Path, light: dict | None = None, neutral: bool = False) -> dict:
+    """Needs a finished run in out/ (repaint.png and mask.png). Writes out/relit/ (or out/relit_neutral/) with layer, plate and the
+    pixel check."""
     run = ad_path.resolve().parent / "out"
-    rel = run / "relit"
+    rel = run / ("relit_neutral" if neutral else "relit")
     rel.mkdir(parents=True, exist_ok=True)
     est = light or estimate_light(run / "repaint.png")
     spec = blender.resolve_ad(ad_path)
-    spec["light"] = light_spec(est, spec.get("light", {}))
-    spec["environment"] = str(panorama(run / "repaint.png", rel / "environment.png"))
+    spec["light"] = light_spec(est, spec.get("light", {}), neutral)
+    spec["environment"] = str(panorama(run / "repaint.png", rel / "environment.png", grey=neutral))
     spec["environment_strength"] = round(0.25 + 0.6 * min(1.0, max(0.0, float(est["ambient_strength"]))), 3)
     spec["render"] = {**spec.get("render", {}), "exposure": round(spec.get("render", {}).get("exposure", 0.0) + 0.5 * float(est["exposure"]), 2)}
     spec["layer_only"] = True

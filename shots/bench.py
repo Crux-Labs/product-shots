@@ -26,7 +26,8 @@ from . import blender, composite, prompt, repaint
 from .config import find_product, setting
 
 ARMS = ["full_model", "blender", "layout_first"]
-ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first", "relit": "Layout first, relit"}
+ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first", "relit": "Layout first, relit",
+             "relit_neutral": "Layout first, relit in white light"}
 FORMATS = {"1:1": (1080, 1080), "4:5": (1080, 1350), "9:16": (1080, 1920)}
 # (scene prompt, floor colour, wall colour or None, light side)
 SCENES = [
@@ -280,10 +281,12 @@ def run(product: str, workers: int = 4, limit: int | None = None) -> dict:
     return {arm: sum(_done(d, arm) for d in briefs) for arm in ARMS} | {"briefs": len(briefs)}
 
 
-def relight_all(product: str, workers: int = 4, limit: int | None = None) -> dict:
-    """Re-lights every finished layout-first ad. Light estimates run in parallel, Blender one job at a time."""
+def relight_all(product: str, workers: int = 4, limit: int | None = None, neutral: bool = False) -> dict:
+    """Re-lights every finished layout-first ad. Light estimates run in parallel (once, shared by both variants), Blender one job
+    at a time."""
     from . import relight
-    todo = [d for d in _briefs(product)[:limit] if _done(d, "layout_first") and not _done(d, "relit")]
+    arm = "relit_neutral" if neutral else "relit"
+    todo = [d for d in _briefs(product)[:limit] if _done(d, "layout_first") and not _done(d, arm)]
     lock = threading.Lock()
 
     def estimate(d):
@@ -293,7 +296,7 @@ def relight_all(product: str, workers: int = 4, limit: int | None = None) -> dic
             try:
                 path.write_text(json.dumps(relight.estimate_light(d / "out" / "repaint.png"), indent=1))
             except Exception as e:
-                _record(d, "relit", {"ok": False, "error": repr(e)[:500]}, lock)
+                _record(d, arm, {"ok": False, "error": repr(e)[:500]}, lock)
 
     with ThreadPoolExecutor(workers) as pool:
         list(pool.map(estimate, todo))
@@ -303,15 +306,15 @@ def relight_all(product: str, workers: int = 4, limit: int | None = None) -> dic
             continue
         t0 = time.time()
         try:
-            result = relight.relight(d / "ad.json", json.loads(path.read_text()))
-            shutil.copy(d / "out" / "relit" / "plate.png", d / "relit.png")
+            result = relight.relight(d / "ad.json", json.loads(path.read_text()), neutral)
+            shutil.copy(d / "out" / arm / "plate.png", d / f"{arm}.png")
             base = json.loads((d / "arms.json").read_text())["layout_first"]
             # The repaint is reused, so the arm costs what layout first did plus one small vision call.
-            _record(d, "relit", {"ok": True, "cost_usd": round(base["cost_usd"] + relight.ESTIMATE_COST_USD, 4),
+            _record(d, arm, {"ok": True, "cost_usd": round(base["cost_usd"] + relight.ESTIMATE_COST_USD, 4),
                                  "seconds": round(base["seconds"] + time.time() - t0, 1), "verify": result["verify"]}, lock)
         except BaseException as e:
-            _record(d, "relit", {"ok": False, "error": repr(e)[:500]}, lock)
-    return {"relit": sum(_done(d, "relit") for d in _briefs(product)[:limit])}
+            _record(d, arm, {"ok": False, "error": repr(e)[:500]}, lock)
+    return {arm: sum(_done(d, arm) for d in _briefs(product)[:limit])}
 
 
 JUDGE_PROMPT = """You are judging product advertising images for a brand, blind. The first image is a REAL photo of the product: the exact {noun} the brand sells.{reference_note} Then come three candidate ads, labelled A, B and C, all made from the same brief:
@@ -532,7 +535,7 @@ def report(product: str, out_dir: Path, examples: int = 6, arms: list[str] | Non
             "low_product_fidelity_rate": round(sum(x["product_fidelity"] <= 3 for x in js) / n, 3),
             "mean_cost_usd": round(sum(costs) / n, 4), "mean_seconds": round(sum(secs) / n, 1),
         }
-    for arm in ("layout_first", "relit"):
+    for arm in ("layout_first", "relit", "relit_neutral"):
         if arm in ARMS:
             checks = [a[arm]["verify"] for _, _, a in rows]
             summary[f"{arm}_pixel_check"] = {"passed": sum(v["pass"] for v in checks), "of": len(checks)}
