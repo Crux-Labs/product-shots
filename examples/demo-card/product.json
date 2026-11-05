@@ -14,15 +14,15 @@
     "back": "kit/back.jpg"
   },
   "face_finish": {
-    "front": "matte",
-    "back": "matte"
+    "front": "soft_touch",
+    "back": "soft_touch"
   },
   "body_color": [
     18,
     28,
     52
   ],
-  "finish": "matte",
+  "finish": "soft_touch",
   "reference_photo": "kit/reference.jpg",
   "bench": {
     "noun": "card",

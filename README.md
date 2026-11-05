@@ -65,12 +65,12 @@ Five products, three methods each, judged blind by Gemini 3.1 Pro. Four of the p
 
 | | Coca-Cola | Phone | Card | Serum box | Coffee tin |
 |---|---|---|---|---|---|
-| Ranked first, image model / layout first | 98% / 2% | 67% / 33% | 90% / 10% | 57% / 43% | 70% / 30% |
-| Would ship, image model / layout first | 78% / 0% | 70% / 40% | 86% / 10% | 57% / 33% | 40% / 17% |
-| Image model's product scored 3 or less | 6% | 0% | 0% | **37%** | **37%** |
-| Layout first product pixels exact | 100 / 100 | 30 / 30 | 29 / 29 | 30 / 30 | 30 / 30 |
+| Ranked first, image model / layout first | 98% / 2% | 63% / 37% | 90% / 10% | 57% / 43% | 70% / 30% |
+| Would ship, image model / layout first | 78% / 0% | 63% / 37% | 90% / 23% | 57% / 33% | 40% / 17% |
+| Image model's product scored 3 or less | 6% | 3% | 0% | **37%** | **37%** |
+| Layout first product pixels exact | 100 / 100 | 30 / 30 | 30 / 30 | 30 / 30 | 30 / 30 |
 
-**The image model wins more briefs on every product, by how much depends on the product.** It copies flat things seen straight on (the phone, the card, down to the card's small print) almost perfectly. When it has to wrap or fold the artwork into 3D, it breaks the product: squat tins with every label panel squeezed onto the front, garbled lid text ("COFEYERS"), cartons with three panels pasted across one wide face. Those are believable photos a brand can't run. Layout first keeps every product pixel, but its product keeps Blender's light, and our card and phone materials still render too pale. Full write-up: [results/report.md](results/report.md); Coca-Cola details: [results/coca-cola/report.md](results/coca-cola/report.md).
+**The image model wins more briefs on every product, by how much depends on the product.** It copies flat things seen straight on (the phone, the card, down to the card's small print) almost perfectly. When it has to wrap or fold the artwork into 3D, it breaks the product: squat tins with every label panel squeezed onto the front, garbled lid text ("COFEYERS"), cartons with three panels pasted across one wide face. Those are believable photos a brand can't run. Layout first keeps every product pixel, but its product keeps Blender's light. Fixing our card's material (it first rendered grey) cut its bad product scores from 28% to 3%, but not its losses. Full write-up: [results/report.md](results/report.md); Coca-Cola details: [results/coca-cola/report.md](results/coca-cola/report.md).
 <!-- BENCH:END -->
 
 ## Quickstart

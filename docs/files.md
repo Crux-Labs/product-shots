@@ -9,7 +9,7 @@
 | `template` | all | `box`, `cylinder` or `slab`. See [templates.md](templates.md). |
 | `dimensions_mm` | all | Real size. box: `width`, `depth`, `height`. cylinder: `diameter`, `height`. slab: `width`, `height`, `depth` (thickness). |
 | `body_color` | all | sRGB `[r, g, b]` for any area without a texture. |
-| `finish` | all | `matte`, `paper`, `glossy`, `metal`, `plastic`, `aluminium` (bare can metal), `printed_metal` (ink on metal under varnish, as on drinks cans: coloured ink lets the metal shine through, white and black ink don't), `glass` (a phone screen) or `frosted_glass` (a matte glass back). |
+| `finish` | all | `matte`, `paper`, `glossy`, `metal`, `plastic`, `aluminium` (bare can metal), `printed_metal` (ink on metal under varnish, as on drinks cans: coloured ink lets the metal shine through, white and black ink don't), `glass` (a phone screen), `frosted_glass` (a matte glass back) or `soft_touch` (a printed card with almost no sheen, so dark inks stay dark). |
 | `faces` | box, slab | box: `front`, `back`, `left`, `right`, `top`, `bottom`; slab: `front`, `back`. Texture paths relative to the product folder. Missing faces use `body_color`. |
 | `bevel_mm` | box, slab | Edge rounding, default 0.8 (box) or 0.5 (slab). |
 | `corner_radius_mm` | slab | Rounding of the outline's corners, as seen from the front. Make it a touch larger than the photo's so no background shows at the corners. |

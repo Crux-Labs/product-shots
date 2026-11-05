@@ -63,7 +63,8 @@
       "screen: Tuesday 5 November",
       "screen: 9:41",
       "screen: sage and peach wave wallpaper"
-    ]
+    ],
+    "exposure": -0.4
   },
   "notes": "Made-up demo product. Its front and back were drawn once by an image model (examples/draw_products.py); from then on those two photos are the product, and every ad takes product pixels only from them, through the 3D model."
 }

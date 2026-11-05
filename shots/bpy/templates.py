@@ -26,7 +26,9 @@ FINISHES = {
     "printed_metal": {"Roughness": 0.22, "Metallic": 1.0, "Coat Weight": 0.6, "Coat Roughness": 0.04},
     # Phone screens and glass backs.
     "glass": {"Roughness": 0.08, "Coat Weight": 0.15, "Coat Roughness": 0.03},
-    "frosted_glass": {"Roughness": 0.55, "Specular IOR Level": 0.15, "Coat Weight": 0.05, "Coat Roughness": 0.3},
+    "frosted_glass": {"Roughness": 0.6, "Specular IOR Level": 0.05, "Coat Weight": 0.03, "Coat Roughness": 0.3},
+    # Soft-touch laminate on a printed card: almost no sheen, so dark inks stay dark under a bright sky.
+    "soft_touch": {"Roughness": 0.7, "Specular IOR Level": 0.04},
 }
 
 
