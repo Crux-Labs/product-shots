@@ -131,6 +131,8 @@ def cmd_bench(args) -> int:
         emit({"briefs": bench.make_briefs(args.product, args.n)})
     elif args.step == "run":
         emit(bench.run(args.product, args.workers, args.limit))
+    elif args.step == "swap":
+        emit(bench.swap_all(args.product, args.limit))
     elif args.step == "variant":
         emit(bench.variant(args.product, args.name, args.briefs, args.workers, args.distance, args.lean, args.filter_width, args.samples, args.grain,
                            args.deghost, args.key_color, args.exposure_shift))
@@ -176,7 +178,7 @@ def main(argv=None) -> int:
     tx.add_argument("--wrap", type=float, default=150)
     tx.set_defaults(fn=cmd_texture)
     bn = sub.add_parser("bench")
-    bn.add_argument("step", choices=["briefs", "run", "variant", "relight", "judge", "accuracy", "report"])
+    bn.add_argument("step", choices=["briefs", "run", "swap", "variant", "relight", "judge", "accuracy", "report"])
     bn.add_argument("product")
     bn.add_argument("--n", type=int, default=100)
     bn.add_argument("--workers", type=int, default=4)

@@ -121,10 +121,37 @@ Three judgements per brief on the five briefs put the polished version 0.1-0.2 p
 
 The judge's notes on the polished ads say "flat cutout", "lacks 3D volume", "pasted in" more often: the image model's rim we removed was also what made the product read as a solid object sitting in the room. Two lessons: a five-brief dev set can't steer changes this small (one judgement of the same image swung from 3 to 7 on product), and the remaining gap isn't a list of small defects. The tools stay in `shots bench` (`variant`, `--deghost`, `--grain`, `judge --repeat`), off by default; numbers in `results/<product>/v4/`.
 
+## Swap: model first, exact product swapped in
+
+Relighting and polishing both failed, so we reversed the order. The image model draws the whole ad, then `shots swap` puts our exact product where it put its own:
+
+1. **Find:** Gemini marks each product in the ad: which face shows and that face's four corners.
+2. **Pose:** the corners and the face's real size give each product's position and angle and the camera's focal length (a homography, solved exactly; tested on synthetic poses).
+3. **Render:** Blender renders our product at those poses, with the ad itself as the reflected room.
+4. **Rebuild:** whatever of the model's product ours doesn't cover (a wider outline, a squat tin's extra width, its reflection) is repainted as background by one masked image-model edit outside our product.
+5. **Composite and pixel check.** All 120 swapped ads passed.
+
+| All four products, 120 briefs | Image model | Layout first | Swap |
+|---|---|---|---|
+| Ranked first | 75% | 7% | **18%** |
+| Would ship | 63% | 10% | **23%** |
+| Product score (1-10) | 6.2 | 4.7 | **5.4** |
+| Realism (1-10) | 6.5 | 5.1 | 4.7 |
+| Overall (1-10) | 6.4 | 5.1 | **5.3** |
+| Cost per ad | $0.09 | $0.09 | $0.19 |
+
+By product, the swap **tied the image model on the serum carton** (overall 5.87 vs 5.88; ranked first 40% vs 50%, would ship 47% vs 53%) with every box exact, and **beat layout first clearly on the card** (5.93 vs 5.22, would ship 27% vs 17%). It did worse than layout first on the phone (5.19 vs 5.40) and the coffee tin (4.14 vs 4.71). The failures we looked at are mechanical, not the idea:
+
+- **Seams.** The rebuilt patch comes back a little lighter or darker than the photo, and its rectangle shows ("visible seams in the background"). Needs a wider feather and a colour match to the surrounding photo.
+- **Round products.** A tin's pose from the label's four corners is weak: the model's tins were seen from above with lids showing, ours came out front-on, one floating. Needs the lid's ellipse in the pose fit.
+- **Steep phones.** When a face is close to front-on the focal length can't be measured and falls back to a 50 mm guess; on angled phones the perspective then doesn't fit, and a sliver of the model's phone survived outside the rebuild area.
+
+Developed on five briefs (three judgements each), then run on all 120. Results: `results/<product>/swap/`.
+
 ## What would close the gap
 
 - **Check the material before making ads:** render the product under a few bench lights and compare its printed colours with the reference automatically. The card's grey would have been caught before any money was spent.
-- **Swap the order: start from the image model's ad.** Relighting and polishing are both ruled out above; what the image model does better is place the product in the room. So let it draw the whole ad, find where and how it placed the product, render our exact product at that pose, put it over the model's version and rebuild any of the room the model's (often wrongly shaped) product covered. The product pixels still come only from the 3D model.
+- **Finish the swap** (above): seamless rebuilds, the lid in a round product's pose, and focal length from all products together. On flat-faced products it already matches or nears the image model with an exact product.
 - **Guard the repaint against extra products:** some repaints drew more cards than the brief asked for, outside our mask. A check that counts products in the finished ad would catch it.
 
 ## Reproduce

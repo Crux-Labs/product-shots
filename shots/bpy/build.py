@@ -17,7 +17,7 @@ import time
 from pathlib import Path
 
 import bpy
-from mathutils import Vector
+from mathutils import Matrix, Vector
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import templates  # noqa: E402
@@ -78,9 +78,12 @@ def place_products(items):
     objs = []
     for n, item in enumerate(items):
         obj = templates.build(item["product"], f"{item['product']['name']}_{n}")
-        x, y, z = item.get("position_mm", [0, 0, 0])
-        obj.location = (x * MM, y * MM, z * MM)
-        obj.rotation_euler = [math.radians(a) for a in item.get("rotation_deg", [0, 0, 0])]
+        if "matrix" in item:  # a full pose in metres, as shots swap measures it from an existing image
+            obj.matrix_world = Matrix(item["matrix"])
+        else:
+            x, y, z = item.get("position_mm", [0, 0, 0])
+            obj.location = (x * MM, y * MM, z * MM)
+            obj.rotation_euler = [math.radians(a) for a in item.get("rotation_deg", [0, 0, 0])]
         objs.append(obj)
     return objs
 
@@ -94,6 +97,10 @@ def camera(cam_spec, page):
     data.sensor_fit = "AUTO"
     cam = bpy.data.objects.new("camera", data)
     sc.collection.objects.link(cam)
+    if "matrix" in cam_spec:
+        cam.matrix_world = Matrix(cam_spec["matrix"])
+        sc.camera = cam
+        return cam
     tx, ty, tz = [v * MM for v in cam_spec.get("target_mm", [0, 0, 20])]
     az = math.radians(cam_spec.get("azimuth_deg", 0))
     dist, height = cam_spec.get("distance_mm", 500) * MM, cam_spec.get("height_mm", 150) * MM
@@ -155,6 +162,8 @@ def environment(path, strength):
 
 def set_pieces(spec):
     s = spec.get("set", {})
+    if s.get("floor") is False:  # shots swap: the product goes into an existing photo, which already has its floor and shadows
+        return []
     env = [plane("floor", 8, (0, 0, 0), (0, 0, 0), _diffuse("floor", s.get("floor_color", (180, 150, 120)), 0.6))]
     if s.get("wall", True):
         y = s.get("wall_distance_mm", 300) * MM
@@ -193,7 +202,7 @@ def layout():
     sc.render.image_settings.file_format, sc.render.image_settings.color_mode = "PNG", "RGBA"
     samples = r.get("samples", 128)
     info = {"blender": bpy.app.version_string, "device": cy.device, "samples": samples, "page": SPEC["page"], "products": [o.name for o in products]}
-    if not SPEC.get("layer_only"):
+    if not SPEC.get("layer_only") and not SPEC.get("no_guide"):
         info["guide_s"] = render(OUT / "guide.png", samples)
     sc.render.film_transparent = True
     for o in env:

@@ -42,12 +42,14 @@ def _png(im: Image.Image) -> io.BytesIO:
     return b
 
 
-def _openai(model, guide, mask_alpha, prompt):
+def _openai(model, guide, mask_alpha, prompt, grow_px=6):
     from openai import OpenAI
     size = openai_size(*guide.size)
     sw, sh = map(int, size.split("x"))
     # Edit mask: transparent may change; the product, grown about 6 px, stays opaque.
-    a = mask_alpha.resize((sw, sh), Image.LANCZOS).point(lambda v: 255 if v > 8 else 0).filter(ImageFilter.MaxFilter(13))
+    a = mask_alpha.resize((sw, sh), Image.LANCZOS).point(lambda v: 255 if v > 8 else 0)
+    if grow_px:
+        a = a.filter(ImageFilter.MaxFilter(2 * grow_px + 1))
     m = Image.new("RGBA", (sw, sh), (0, 0, 0, 0))
     m.putalpha(a)
     r = OpenAI().images.edit(model=model, image=_png(guide.resize((sw, sh), Image.LANCZOS)), mask=_png(m), prompt=prompt, size=size, quality="high", n=1)
@@ -103,6 +105,15 @@ def generate_full(prompt: str, references: list[Path], size: tuple[int, int], ou
     p = PRICES["openai"]
     cost = (det.get("text_tokens", 0) * p[0] + det.get("image_tokens", 0) * p[1] + u.get("output_tokens", 0) * p[2]) / 1e6
     return {"model": model, "size": req, "cost_usd": round(cost, 4), "seconds": round(time.time() - t0, 1)}
+
+
+def edit(image: Image.Image, keep_alpha: Image.Image, prompt: str, out_path: Path) -> dict:
+    """One masked edit: where keep_alpha is 255 must stay, the rest the model may repaint (no safety margin: the caller decides)."""
+    provider, model = provider_and_model("openai")
+    t0 = time.time()
+    out, extra, cost = _openai(model, image.convert("RGB"), keep_alpha, prompt, grow_px=0)
+    fit(out, image.size).save(out_path)
+    return {"provider": provider, "model": model, "cost_usd": round(cost, 4), "seconds": round(time.time() - t0, 1), **extra}
 
 
 def repaint(run_dir: Path, prompt: str, provider: str | None = None) -> dict:

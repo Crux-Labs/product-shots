@@ -27,7 +27,7 @@ from .config import find_product, setting
 
 ARMS = ["full_model", "blender", "layout_first"]
 ARM_NAMES = {"full_model": "Image model draws the ad", "blender": "Blender only", "layout_first": "Layout first", "relit": "Layout first, relit",
-             "relit_neutral": "Layout first, relit in white light", "v4": "Layout first, polished"}
+             "relit_neutral": "Layout first, relit in white light", "v4": "Layout first, polished", "swap": "Model first, exact product swapped in"}
 FORMATS = {"1:1": (1080, 1080), "4:5": (1080, 1350), "9:16": (1080, 1920)}
 # (scene prompt, floor colour, wall colour or None, light side)
 SCENES = [
@@ -339,6 +339,23 @@ def variant(product: str, name: str, briefs: list[str] | None = None, workers: i
     return {name: sum(_done(d, name) for d in _briefs(product) if briefs is None or d.name in briefs)}
 
 
+def swap_all(product: str, limit: int | None = None) -> dict:
+    """Model first, exact product swapped in (see shots/swap.py), as the arm "swap": one brief at a time (Blender on the GPU)."""
+    from . import swap
+    lock = threading.Lock()
+    for d in _briefs(product)[:limit]:
+        if not _done(d, "full_model") or _done(d, "swap"):
+            continue
+        try:
+            r = swap.swap(d, product)
+            base = json.loads((d / "arms.json").read_text())["full_model"]
+            _record(d, "swap", {"ok": True, "cost_usd": round(base["cost_usd"] + r["cost_usd"], 4), "seconds": round(base["seconds"] + r["seconds"], 1),
+                                "verify": r["verify"]}, lock)
+        except BaseException as e:
+            _record(d, "swap", {"ok": False, "error": repr(e)[:500]}, lock)
+    return {"swap": sum(_done(d, "swap") for d in _briefs(product)[:limit])}
+
+
 def relight_all(product: str, workers: int = 4, limit: int | None = None, neutral: bool = False) -> dict:
     """Re-lights every finished layout-first ad. Light estimates run in parallel (once, shared by both variants), Blender one job
     at a time."""
@@ -597,7 +614,7 @@ def report(product: str, out_dir: Path, examples: int = 6, arms: list[str] | Non
             "low_product_fidelity_rate": round(sum(x["product_fidelity"] <= 3 for x in js) / n, 3),
             "mean_cost_usd": round(sum(costs) / n, 4), "mean_seconds": round(sum(secs) / n, 1),
         }
-    for arm in ("layout_first", "relit", "relit_neutral", "v4"):
+    for arm in ("layout_first", "relit", "relit_neutral", "v4", "swap"):
         if arm in ARMS:
             checks = [a[arm]["verify"] for _, _, a in rows]
             summary[f"{arm}_pixel_check"] = {"passed": sum(v["pass"] for v in checks), "of": len(checks)}

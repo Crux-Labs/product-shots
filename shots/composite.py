@@ -97,7 +97,9 @@ def verify(image_path: Path, run_dir: Path) -> dict:
         raise ProductPixelsChanged(f"{image_path} is {img.shape[1]}x{img.shape[0]}, the layout is {layer.shape[1]}x{layer.shape[0]}")
     diff = int(np.abs(img[inside].astype(int) - layer[inside].astype(int)).max()) if inside.any() else 0
     changed = int((np.abs(img[inside].astype(int) - layer[inside].astype(int)).max(axis=-1) > 0).sum()) if inside.any() else 0
-    result = {"image": str(image_path), "product_px": int(inside.sum()), "changed_px": changed, "max_diff": diff, "pass": changed == 0}
+    result = {"image": str(image_path), "product_px": int(inside.sum()), "changed_px": changed, "max_diff": diff, "pass": bool(changed == 0 and inside.any())}
+    if not inside.any():
+        raise ProductPixelsChanged(f"no product pixels in {run_dir / 'mask.png'}: the product isn't in the render")
     if changed:
         raise ProductPixelsChanged(f"{changed} product pixels differ from the Blender render: {result}")
     return result

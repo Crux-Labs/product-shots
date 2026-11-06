@@ -1,0 +1,121 @@
+{
+ "briefs_judged": 30,
+ "arms": {
+  "full_model": {
+   "product_fidelity": 7.03,
+   "realism": 6.57,
+   "brief_match": 7.03,
+   "ad_appeal": 6.57,
+   "overall": 6.8,
+   "ship_rate": 0.7,
+   "win_rate": 0.767,
+   "low_product_fidelity_rate": 0.0,
+   "mean_cost_usd": 0.0922,
+   "mean_seconds": 50.1
+  },
+  "layout_first": {
+   "product_fidelity": 5.0,
+   "realism": 5.13,
+   "brief_match": 6.27,
+   "ad_appeal": 4.47,
+   "overall": 5.22,
+   "ship_rate": 0.167,
+   "win_rate": 0.067,
+   "low_product_fidelity_rate": 0.167,
+   "mean_cost_usd": 0.0923,
+   "mean_seconds": 41.9
+  },
+  "swap": {
+   "product_fidelity": 6.5,
+   "realism": 5.33,
+   "brief_match": 6.67,
+   "ad_appeal": 5.23,
+   "overall": 5.93,
+   "ship_rate": 0.267,
+   "win_rate": 0.167,
+   "low_product_fidelity_rate": 0.033,
+   "mean_cost_usd": 0.1945,
+   "mean_seconds": 138.5
+  }
+ },
+ "layout_first_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "swap_pixel_check": {
+  "passed": 30,
+  "of": 30
+ },
+ "examples": [
+  {
+   "brief": "000",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a caf\u00e9 counter next to a card payment terminal and a takeaway coffee, barista area blurred behind, warm morning light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_000.jpg",
+   "issues": {
+    "full_model": "The cards appear pasted into the scene with flat lighting that ignores the warm environmental light.",
+    "layout_first": "The cards feature invented thick, metallic edges that do not match the reference product.",
+    "swap": "The cards look like 2D cutouts pasted onto the background with mismatched, flat lighting."
+   }
+  },
+  {
+   "brief": "002",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen at eye level, on a brown leather wallet open on a walnut desk, soft study light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_002.jpg",
+   "issues": {
+    "full_model": "Bottom edge of the card is slightly obscured by the wallet fold.",
+    "layout_first": "Card is lying flat instead of standing on edge.",
+    "swap": "Card lacks contact shadows and looks pasted in."
+   }
+  },
+  {
+   "brief": "001",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its front, seen from a high three-quarter view, on a restaurant table with a folded bill, wine glasses and candles blurred behind, warm evening light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_001.jpg",
+   "issues": {
+    "full_model": "The card looks unnaturally balanced and its lighting does not fully integrate with the environment.",
+    "layout_first": "The top space is slightly cluttered by the wine glass, reducing the calm area for a headline.",
+    "swap": "The card appears pasted into the scene with flat lighting and an unnatural balancing pose."
+   }
+  },
+  {
+   "brief": "016",
+   "text": "One navy Kestrel Reserve credit card standing on edge, leaning slightly back, showing its back, seen from a high three-quarter view, on a bookshop counter with stacked books blurred behind, warm cosy light. Format 1:1. Leave calm space at the top for a headline.",
+   "file": "examples/brief_016.jpg",
+   "issues": {
+    "full_model": "The background books are in sharp focus, eliminating the requested calm space for a headline.",
+    "layout_first": "The signature panel is missing the faint diagonal security lines seen in the reference.",
+    "swap": "The stacked books are not blurred as requested, cluttering the top area."
+   }
+  },
+  {
+   "brief": "007",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen from a low hero angle, on a seamless warm beige studio backdrop with a soft floor shadow, clean commercial light. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_007.jpg",
+   "issues": {
+    "full_model": "The cards feature an invented gold rim that inaccurately alters the product's design.",
+    "layout_first": "The cards are rendered as thick metal plaques rather than standard plastic credit cards.",
+    "swap": "The cards appear slightly pasted into the scene due to weak contact shadows and flat lighting."
+   }
+  },
+  {
+   "brief": "010",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a bar counter with a cocktail, bottles and neon blurred behind, moody night light. Format 4:5. Leave calm space at the top for a headline.",
+   "file": "examples/brief_010.jpg",
+   "issues": {
+    "full_model": "The right card suffers from distorted, trapezoidal perspective that breaks realism.",
+    "layout_first": "The cards lack realistic environmental lighting and appear flatly pasted into the scene.",
+    "swap": "The cards are slightly too uniformly sharp compared to the shallow depth of field of the bar surface."
+   }
+  },
+  {
+   "brief": "011",
+   "text": "Two navy Kestrel Reserve credit cards side by side, standing on edge, leaning slightly back, the left one showing its front and the right one its back, seen at eye level, on a farmers' market stall counter with fruit crates blurred behind, bright morning sun. Format 9:16. Leave calm space at the top for a headline.",
+   "file": "examples/brief_011.jpg",
+   "issues": {
+    "full_model": "The credit cards are rendered as thick, rigid blocks rather than thin plastic.",
+    "layout_first": "The image incorrectly displays four stacked cards instead of the requested two.",
+    "swap": "There are very minor imperfections in the shadow contact points on the wood."
+   }
+  }
+ ]
+}

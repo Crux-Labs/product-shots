@@ -26,3 +26,7 @@ The product is lit in Blender and never relit to match the repainted room. We tr
 ## Experimental: relight
 
 `shots relight <ad.json>` re-renders the product after the repaint, under light read from the repainted room (a vision model estimates direction, height, colour and softness) and with the repaint as a blurred panorama to reflect. The result goes to `out/relit/` and passes the same pixel check. `--neutral` keeps the room's light direction but makes it white, with grey reflections. In our benchmark both made ads worse than the plain studio light: room-coloured light tints printed colours (judges read that as the wrong product), and room reflections on metal read as CG. See [results/report.md](../results/report.md#relighting-tests-both-made-things-worse). Not part of `/make-ad`.
+
+## Experimental: swap (model first, exact product)
+
+`shots bench swap <product>` starts from the image model's own ad. A vision model marks each product's visible face and its four corners; those and the face's real size give the product's pose and the camera's focal length; Blender renders our product at that pose with the ad as the reflected room; one masked image-model edit rebuilds whatever of the model's product ours doesn't cover; then the usual composite and pixel check. It tied the image model on the serum carton in our benchmark and beat layout first on the card; round products and steep angles still fail. See [results/report.md](../results/report.md#swap-model-first-exact-product-swapped-in). Not part of `/make-ad` yet.
